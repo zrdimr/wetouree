@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from datetime import datetime
 from typing import List, Optional
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
 from backend import models, database
 
 router = APIRouter(prefix="/rentals", tags=["rentals"])
@@ -56,7 +57,7 @@ def get_all_equipment(db: Session = Depends(database.get_db)):
 @router.get("/equipment/available", response_model=List[Equipment])
 def get_available_equipment(db: Session = Depends(database.get_db)):
     equipment = db.query(models.CampingEquipment).filter(
-        models.CampingEquipment.is_available == True,
+        models.CampingEquipment.is_available.is_(True),
         models.CampingEquipment.available > 0
     ).all()
     return equipment
@@ -110,7 +111,6 @@ def create_rental(rental: RentalCreate, db: Session = Depends(database.get_db)):
         raise HTTPException(status_code=400, detail="Not enough equipment available")
     
     # Calculate total price (simple: days * price * quantity)
-    from datetime import datetime
     try:
         start = datetime.strptime(rental.rental_date, "%Y-%m-%d")
         end = datetime.strptime(rental.return_date, "%Y-%m-%d")
