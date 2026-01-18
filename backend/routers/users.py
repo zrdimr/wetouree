@@ -18,6 +18,8 @@ class UserCreate(BaseModel):
     name: str
     phone: Optional[str] = None
     role: str = "visitor"
+    assigned_area: Optional[str] = None
+    profile_image: Optional[str] = None
 
 class UserLogin(BaseModel):
     username: str
@@ -90,7 +92,9 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
         password_hash=hash_password(user.password),
         name=user.name,
         phone=user.phone,
-        role=user.role if user.role in ROLES else "visitor"
+        role=user.role if user.role in ROLES else "visitor",
+        assigned_area=user.assigned_area,
+        profile_image=user.profile_image
     )
     db.add(db_user)
     db.commit()

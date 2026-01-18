@@ -243,7 +243,9 @@ def create_user():
         "password": request.form.get('password'),
         "name": request.form.get('name'),
         "phone": request.form.get('phone'),
-        "role": request.form.get('role')
+        "role": request.form.get('role'),
+        "assigned_area": request.form.get('assigned_area'),
+        "profile_image": request.form.get('profile_image')
     }
     try:
         requests.post(f"{API_URL}/users/register", json=data)
