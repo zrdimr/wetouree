@@ -29,5 +29,40 @@ jobs:
 
     - name: Analysing the code with pylint
       run: |
-        # Run pylint on backend and frontend directories as well as root scripts
+        # Run pylint with root in PYTHONPATH
+        export PYTHONPATH=$PYTHONPATH:.
         pylint --rcfile=.pylintrc backend/ frontend/ seed_db.py
+
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+        cache: 'pip'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Initialize Database
+      run: python seed_db.py
+    - name: Run Smoke Test
+      run: |
+        # Start Backend
+        uvicorn backend.main:app --port 8000 &
+        BACKEND_PID=$!
+        # Start Frontend
+        python frontend/app.py &
+        FRONTEND_PID=$!
+        
+        # Wait for services
+        sleep 5
+        
+        # Check backend
+        curl -f http://localhost:8000/docs || exit 1
+        # Check frontend
+        curl -f http://localhost:6004/ || exit 1
+        
+        kill $BACKEND_PID $FRONTEND_PID

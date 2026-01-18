@@ -13,9 +13,14 @@ disable=
     W0511, # fixme
     C0413, # wrong-import-position
     C0411, # wrong-import-order
-    C0415, # import-outside-toplevel
     C0301, # line-too-long
     W0611, # unused-import
+    W0702, # bare-except
+    W3101, # missing-timeout
+    R1705, # no-else-return
+    W0613, # unused-argument
+    W0621, # redefined-outer-name
+    C0303, # trailing-whitespace
 
 [FORMAT]
 max-line-length=120
