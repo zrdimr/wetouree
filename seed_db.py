@@ -1,10 +1,11 @@
-import sys
 import os
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
+import sys
+import hashlib
+from datetime import datetime, timedelta
 from backend.database import SessionLocal, engine, Base
 from backend import models
-import uuid
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # Create all tables
 Base.metadata.drop_all(bind=engine)
@@ -14,19 +15,55 @@ db = SessionLocal()
 
 # --- Seed Users ---
 def hash_password(password: str) -> str:
-    import hashlib
+    """Hash a password using SHA-256."""
     return hashlib.sha256(password.encode()).hexdigest()
 
 users = [
-    models.User(username="visitor", email="visitor@example.com", password_hash=hash_password("visitor123"), role="visitor", name="Budi Santoso", phone="081234567890"),
-    models.User(username="umkm_owner", email="umkm@example.com", password_hash=hash_password("umkm123"), role="umkm_owner", name="Ibu Maryam", phone="081234567891"),
-    models.User(username="umkm_admin", email="admin_umkm@example.com", password_hash=hash_password("admin123"), role="umkm_admin", name="Pak Joko", phone="081234567892"),
-    models.User(username="area_manager", email="manager@example.com", password_hash=hash_password("manager123"), role="area_manager", name="Pak Rahman", phone="081234567893", assigned_area="Zona Pantai Selatan"),
-    models.User(username="tourism_officer", email="dinas@example.com", password_hash=hash_password("dinas123"), role="tourism_officer", name="Ibu Sri Wahyuni", phone="081234567894"),
-    models.User(username="regional_admin", email="regional@example.com", password_hash=hash_password("regional123"), role="regional_admin", name="Pak Camat", phone="081234567895", assigned_area="Kepulauan Seribu Utara"),
-    models.User(username="superadmin", email="superadmin@example.com", password_hash=hash_password("superadmin123"), role="superadmin", name="Administrator Utama", phone="081234567896"),
-    models.User(username="ticket_officer", email="ticket@example.com", password_hash=hash_password("ticket123"), role="ticket_officer", name="Petugas Gerbang", phone="081234567897"),
-    models.User(username="content_manager", email="content@example.com", password_hash=hash_password("content123"), role="content_manager", name="Editor Konten", phone="081234567898"),
+    models.User(
+        username="visitor", email="visitor@example.com",
+        password_hash=hash_password("visitor123"), role="visitor",
+        name="Budi Santoso", phone="081234567890"
+    ),
+    models.User(
+        username="umkm_owner", email="umkm@example.com",
+        password_hash=hash_password("umkm123"), role="umkm_owner",
+        name="Ibu Maryam", phone="081234567891"
+    ),
+    models.User(
+        username="umkm_admin", email="admin_umkm@example.com",
+        password_hash=hash_password("admin123"), role="umkm_admin",
+        name="Pak Joko", phone="081234567892"
+    ),
+    models.User(
+        username="area_manager", email="manager@example.com",
+        password_hash=hash_password("manager123"), role="area_manager",
+        name="Pak Rahman", phone="081234567893", assigned_area="Zona Pantai Selatan"
+    ),
+    models.User(
+        username="tourism_officer", email="dinas@example.com",
+        password_hash=hash_password("dinas123"), role="tourism_officer",
+        name="Ibu Sri Wahyuni", phone="081234567894"
+    ),
+    models.User(
+        username="regional_admin", email="regional@example.com",
+        password_hash=hash_password("regional123"), role="regional_admin",
+        name="Pak Camat", phone="081234567895", assigned_area="Kepulauan Seribu Utara"
+    ),
+    models.User(
+        username="superadmin", email="superadmin@example.com",
+        password_hash=hash_password("superadmin123"), role="superadmin",
+        name="Administrator Utama", phone="081234567896"
+    ),
+    models.User(
+        username="ticket_officer", email="ticket@example.com",
+        password_hash=hash_password("ticket123"), role="ticket_officer",
+        name="Petugas Gerbang", phone="081234567897"
+    ),
+    models.User(
+        username="content_manager", email="content@example.com",
+        password_hash=hash_password("content123"), role="content_manager",
+        name="Editor Konten", phone="081234567898"
+    ),
 ]
 db.add_all(users)
 db.commit()
@@ -185,7 +222,6 @@ db.add_all(contents)
 db.commit()
 
 # --- Seed Events ---
-from datetime import datetime, timedelta
 events = [
     models.Event(
         destination_id=3,

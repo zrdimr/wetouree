@@ -30,4 +30,4 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         # Run pylint on backend and frontend directories as well as root scripts
-        pylint backend/ frontend/ seed_db.py
+        pylint --rcfile=.pylintrc backend/ frontend/ seed_db.py

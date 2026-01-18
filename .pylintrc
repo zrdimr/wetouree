@@ -14,6 +14,8 @@ disable=
     C0413, # wrong-import-position
     C0411, # wrong-import-order
     C0415, # import-outside-toplevel
+    C0301, # line-too-long
+    W0611, # unused-import
 
 [FORMAT]
 max-line-length=120
