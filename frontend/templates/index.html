@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Official tourism management for Pulau Harapan, Kepulauan Seribu. Book your island trips and packages today.">
+    <title>Pulau Harapan Tourism</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header class="hero">
+        <nav class="navbar">
+            <div class="logo">Pulau Harapan</div>
+            <div class="menu-toggle" id="mobile-menu-btn">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#destinations">Destinations</a></li>
+                <li><a href="#packages">Packages</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="hero-content">
+            <h1>Experience the Hidden Gem <br>of Jakarta</h1>
+            <p>Crystal clear waters, beautiful coral reefs, and unforgettable memories await.</p>
+            <a href="#packages" class="btn-primary">Book Now</a>
+        </div>
+    </header>
+
+    <section id="destinations" class="section">
+        <div class="container">
+            <h2>Popular Destinations</h2>
+            <div class="grid">
+                {% for dest in destinations %}
+                <div class="card">
+                    <img src="{{ dest.image_url }}" alt="{{ dest.name }}"
+                        style="width:100%; height:200px; object-fit:cover;">
+                    <div class="card-content">
+                        <h3>{{ dest.name }}</h3>
+                        <p>{{ dest.description }}</p>
+                    </div>
+                </div>
+                {% else %}
+                <p>No destinations available at the moment.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section id="packages" class="section bg-light">
+        <div class="container">
+            <h2>Tour Packages</h2>
+            <div class="grid">
+                {% for pkg in packages %}
+                <div class="card">
+                    <div class="card-content">
+                        <h3>{{ pkg.name }}</h3>
+                        <p class="price">IDR {{ "{:,.0f}".format(pkg.price) }}</p>
+                        <ul class="features">
+                            {% for feature in pkg.features %}
+                            <li>{{ feature }}</li>
+                            {% endfor %}
+                        </ul>
+                        <a href="{{ url_for('package_details', package_id=pkg.id) }}" class="btn-secondary"
+                            style="text-align:center; text-decoration:none;">View Details</a>
+                    </div>
+                </div>
+                {% else %}
+                <p>No packages available at the moment.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2025 Pulau Harapan Tourism Management. All rights reserved.</p>
+    </footer>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+
+</html>

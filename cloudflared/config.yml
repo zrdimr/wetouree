@@ -1,0 +1,7 @@
+tunnel: <YOUR_TUNNEL_ID>
+credentials-file: /root/.cloudflared/<YOUR_TUNNEL_ID>.json
+
+ingress:
+  - hostname: pulau-harapan.yourdomain.com
+    service: http://localhost:6004
+  - service: http_status:404

@@ -1,0 +1,43 @@
+{% extends "admin_layout.html" %}
+
+{% block content %}
+<div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h4>Manage Destinations</h4>
+        <!-- Placeholder for Create button if we had one -->
+        <!-- <a href="#" class="btn btn-info">Add New</a> -->
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dest in destinations %}
+            <tr>
+                <td>#{{ dest.id }}</td>
+                <td><img src="{{ dest.image_url }}" alt="{{ dest.name }}"
+                        style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
+                <td>{{ dest.name }}</td>
+                <td>{{ dest.description[:50] }}...</td>
+                <td>
+                    <form action="{{ url_for('delete_destination', destination_id=dest.id) }}" method="POST"
+                        onsubmit="return confirm('Are you sure?');" style="display:inline;">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="text-align:center;">No destinations found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

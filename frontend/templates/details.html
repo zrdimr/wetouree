@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ package.name }} - Pulau Harapan Tourism</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .details-container {
+            max-width: 800px;
+            margin: 100px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .package-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .package-price {
+            font-size: 2rem;
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+
+        .booking-form {
+            margin-top: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .qris-image {
+            width: 100%;
+            max-width: 300px;
+            margin: 20px 0;
+        }
+
+        .btn-confirm {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .btn-close {
+            background-color: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar" style="position: sticky; background-color: var(--primary-color);">
+        <div class="logo">Pulau Harapan</div>
+        <div class="menu-toggle" id="mobile-menu-btn">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('home') }}#destinations">Destinations</a></li>
+            <li><a href="{{ url_for('home') }}#packages">Packages</a></li>
+        </ul>
+    </nav>
+
+    <div class="details-container">
+        <div class="package-header">
+            <h1>{{ package.name }}</h1>
+            <p class="package-price">IDR {{ "{:,.0f}".format(package.price) }}</p>
+        </div>
+
+        <div class="package-info">
+            <h3>Package Includes:</h3>
+            <ul class="features" style="background: none; padding: 0;">
+                {% for feature in package.features %}
+                <li>{{ feature }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="booking-form">
+            <h2>Book This Trip</h2>
+            <form id="bookingForm" onsubmit="return showPayment(event)">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="date">Travel Date</label>
+                    <input type="date" id="date" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; border: none; cursor: pointer;">Proceed to
+                    Payment</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- QRIS Modal -->
+    <div id="qrisModal" class="modal">
+        <div class="modal-content">
+            <button class="btn-close" onclick="closeModal()">X</button>
+            <h2>Scan QRIS to Pay</h2>
+            <p>Total: <strong>IDR {{ "{:,.0f}".format(package.price) }}</strong></p>
+            <!-- Placeholder for QRIS -->
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png"
+                alt="QRIS Code" class="qris-image">
+            <p>After scanning, click confirm below.</p>
+            <button class="btn-confirm" onclick="confirmBooking()">I Have Paid</button>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2024 Pulau Harapan Tourism Management. All rights reserved.</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        function showPayment(event) {
+            event.preventDefault();
+            document.getElementById('qrisModal').style.display = 'flex';
+            return false;
+        }
+
+        function closeModal() {
+            document.getElementById('qrisModal').style.display = 'none';
+        }
+
+        function confirmBooking() {
+            // Here you would typically send data to backend
+            alert("Booking Confirmed! Thank you for your payment.");
+            window.location.href = "{{ url_for('home') }}";
+        }
+    </script>
+</body>
+
+</html>

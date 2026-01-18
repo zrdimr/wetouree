@@ -1,0 +1,59 @@
+{% extends "admin_layout.html" %}
+
+{% block content %}
+<div class="card">
+    <h4>Overview</h4>
+    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+        <div style="flex: 1; background: #e3f2fd; padding: 20px; border-radius: 8px; text-align: center;">
+            <h2 style="margin: 0; color: #0d47a1;">{{ bookings|length }}</h2>
+            <p style="margin: 5px 0; color: #555;">Total Bookings</p>
+        </div>
+        <div style="flex: 1; background: #e8f5e9; padding: 20px; border-radius: 8px; text-align: center;">
+            <h2 style="margin: 0; color: #1b5e20;">{{ confirmed_count }}</h2>
+            <p style="margin: 5px 0; color: #555;">Confirmed</p>
+        </div>
+        <div style="flex: 1; background: #fff3e0; padding: 20px; border-radius: 8px; text-align: center;">
+            <h2 style="margin: 0; color: #e65100;">{{ pending_count }}</h2>
+            <p style="margin: 5px 0; color: #555;">Pending</p>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h4>Recent Bookings</h4>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Customer</th>
+                <th>Package ID</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings[:5] %}
+            <tr>
+                <td>#{{ booking.id }}</td>
+                <td>{{ booking.customer_name }}</td>
+                <td>{{ booking.package_id }}</td>
+                <td>{{ booking.date }}</td>
+                <td>
+                    <span
+                        class="badge {% if booking.status == 'confirmed' %}bg-success{% elif booking.status == 'pending' %}bg-warning{% else %}bg-secondary{% endif %}">
+                        {{ booking.status }}
+                    </span>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="text-align:center;">No bookings found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div style="margin-top: 15px; text-align: right;">
+        <a href="{{ url_for('admin_bookings') }}" class="btn btn-info">View All Bookings</a>
+    </div>
+</div>
+{% endblock %}
