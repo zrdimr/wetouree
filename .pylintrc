@@ -1,0 +1,28 @@
+[MASTER]
+ignore=venv,node_modules,__pycache__
+
+[MESSAGES CONTROL]
+# Disable some checks that are often too pedantic
+disable=
+    C0114, # missing-module-docstring
+    C0115, # missing-class-docstring
+    C0116, # missing-function-docstring
+    R0903, # too-few-public-methods
+    C0103, # invalid-name (often too strict with snake_case vs camelCase)
+    W0703, # broad-except (sometimes necessary in top-level handlers)
+    W0511, # fixme
+    C0413, # wrong-import-position
+    C0411, # wrong-import-order
+    C0415, # import-outside-toplevel
+
+[FORMAT]
+max-line-length=120
+
+[DESIGN]
+max-args=5
+max-attributes=10
+max-locals=20
+max-returns=6
+max-branches=15
+max-statements=50
+max-parents=7
