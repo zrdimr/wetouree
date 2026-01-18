@@ -24,6 +24,7 @@
             --text-primary: #1b262c;
             --text-secondary: #64748b;
             --sidebar-width: 260px;
+            --sidebar-width-collapsed: 80px;
             --header-height: 70px;
         }
 
@@ -51,7 +52,26 @@
             backdrop-filter: blur(10px);
             padding: 20px 0;
             z-index: 100;
-            transition: transform 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .sidebar-header {
@@ -93,29 +113,60 @@
 
         .sidebar-menu {
             list-style: none;
-            padding: 0 15px;
+            padding: 0 10px;
+        }
+
+        .sidebar-menu-group {
+            margin-bottom: 5px;
         }
 
         .sidebar-menu-title {
-            color: var(--text-secondary);
+            color: rgba(255, 255, 255, 0.4);
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            padding: 15px 10px 10px;
-            margin-top: 10px;
+            padding: 20px 15px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .sidebar-menu-title:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .sidebar-menu-title i {
+            transition: transform 0.3s;
+            font-size: 10px;
+        }
+
+        .group-collapsed .sidebar-menu-title i {
+            transform: rotate(-90deg);
+        }
+
+        .group-items {
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0, 1, 0, 1);
+        }
+
+        .group-collapsed .group-items {
+            max-height: 0;
         }
 
         .sidebar-menu a {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 15px;
+            padding: 10px 15px;
             color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
-            border-radius: 10px;
-            margin-bottom: 5px;
+            border-radius: 8px;
+            margin-bottom: 2px;
             transition: all 0.2s ease;
-            font-size: 14px;
+            font-size: 13.5px;
         }
 
         .sidebar-menu a:hover {
@@ -139,6 +190,69 @@
             margin-left: var(--sidebar-width);
             min-height: 100vh;
             padding: 20px 30px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Collapsed State */
+        body.sidebar-collapsed .sidebar {
+            width: var(--sidebar-width-collapsed);
+        }
+
+        body.sidebar-collapsed .main-content {
+            margin-left: var(--sidebar-width-collapsed);
+        }
+
+        body.sidebar-collapsed .sidebar-logo-text,
+        body.sidebar-collapsed .sidebar-logo-sub,
+        body.sidebar-collapsed .sidebar-menu-title span,
+        body.sidebar-collapsed .sidebar-menu-title i,
+        body.sidebar-collapsed .sidebar-menu span:not(.menu-icon) {
+            display: none;
+        }
+
+        body.sidebar-collapsed .sidebar-menu-title {
+            padding: 15px 0;
+            justify-content: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 10px;
+        }
+
+        body.sidebar-collapsed .group-items {
+            max-height: none;
+        }
+
+        body.sidebar-collapsed .sidebar-logo {
+            justify-content: center;
+        }
+
+        body.sidebar-collapsed .sidebar-menu a {
+            justify-content: center;
+            padding: 12px 0;
+        }
+
+        body.sidebar-collapsed .menu-icon {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        /* Toggle Button */
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: background 0.2s;
+            margin-right: 15px;
+        }
+
+        .toggle-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
         }
 
         .header {
@@ -454,65 +568,90 @@
         </div>
 
         <ul class="sidebar-menu">
-            <li class="sidebar-menu-title">Main</li>
-            <li><a href="{{ url_for('admin_dashboard') }}"
-                    class="{{ 'active' if request.endpoint == 'admin_dashboard' else '' }}"><span
-                        class="menu-icon">📊</span> Dashboard</a></li>
+            <div class="sidebar-menu-group">
+                <div class="sidebar-menu-title"><span>Main</span> <i>▼</i></div>
+                <div class="group-items">
+                    <li><a href="{{ url_for('admin_dashboard') }}"
+                            class="{{ 'active' if request.endpoint == 'admin_dashboard' else '' }}"><span
+                                class="menu-icon">📊</span> <span>Dashboard</span></a></li>
+                </div>
+            </div>
 
-            <li class="sidebar-menu-title">Management</li>
-            <li><a href="{{ url_for('admin_destinations') }}"
-                    class="{{ 'active' if request.endpoint == 'admin_destinations' else '' }}"><span
-                        class="menu-icon">🗺️</span> Destinasi</a></li>
-            <li><a href="{{ url_for('admin_bookings') }}"
-                    class="{{ 'active' if request.endpoint == 'admin_bookings' else '' }}"><span
-                        class="menu-icon">🎫</span> Tiket & Booking</a></li>
-            <li><a href="{{ url_for('admin_gate') }}"
-                    class="{{ 'active' if request.endpoint == 'admin_gate' else '' }}"><span class="menu-icon">🚪</span>
-                    Gate Check-in</a></li>
-            <li><a href="{{ url_for('admin_umkm') if 'admin_umkm' in url_for.__globals__['current_app'].view_functions else '#' }}"
-                    class="{{ 'active' if request.endpoint == 'admin_umkm' else '' }}"><span class="menu-icon">🏪</span>
-                    UMKM</a></li>
-            <li><a href="{{ url_for('admin_rentals') }}"
-                    class="{{ 'active' if request.endpoint == 'admin_rentals' else '' }}"><span
-                        class="menu-icon">⛺</span> Sewa Camping</a></li>
-            <li><a href="{{ url_for('admin_guides') }}"
-                    class="{{ 'active' if request.endpoint == 'admin_guides' else '' }}"><span
-                        class="menu-icon">👨‍🏫</span> Tour Guide</a></li>
+            <div class="sidebar-menu-group">
+                <div class="sidebar-menu-title"><span>Management</span> <i>▼</i></div>
+                <div class="group-items">
+                    <li><a href="{{ url_for('admin_users') }}"
+                            class="{{ 'active' if request.endpoint == 'admin_users' else '' }}"><span
+                                class="menu-icon">👥</span> <span>Manajemen Pengguna</span></a></li>
+                    <li><a href="{{ url_for('admin_destinations') }}"
+                            class="{{ 'active' if request.endpoint == 'admin_destinations' else '' }}"><span
+                                class="menu-icon">🗺️</span> <span>Destinasi</span></a></li>
+                    <li><a href="{{ url_for('admin_bookings') }}"
+                            class="{{ 'active' if request.endpoint == 'admin_bookings' else '' }}"><span
+                                class="menu-icon">🎫</span> <span>Tiket & Booking</span></a></li>
+                    <li><a href="{{ url_for('admin_gate') }}"
+                            class="{{ 'active' if request.endpoint == 'admin_gate' else '' }}"><span
+                                class="menu-icon">🚪</span> <span>Gate Check-in</span></a></li>
+                    <li><a href="{{ url_for('admin_umkm') if 'admin_umkm' in url_for.__globals__['current_app'].view_functions else '#' }}"
+                            class="{{ 'active' if request.endpoint == 'admin_umkm' else '' }}"><span
+                                class="menu-icon">🏪</span> <span>UMKM</span></a></li>
+                    <li><a href="{{ url_for('admin_rentals') }}"
+                            class="{{ 'active' if request.endpoint == 'admin_rentals' else '' }}"><span
+                                class="menu-icon">⛺</span> <span>Sewa Camping</span></a></li>
+                    <li><a href="{{ url_for('admin_guides') }}"
+                            class="{{ 'active' if request.endpoint == 'admin_guides' else '' }}"><span
+                                class="menu-icon">👨‍🏫</span> <span>Tour Guide</span></a></li>
+                </div>
+            </div>
 
-            <li class="sidebar-menu-title">Content</li>
-            <li><a href="{{ url_for('admin_cms') }}"
-                    class="{{ 'active' if request.endpoint == 'admin_cms' else '' }}"><span class="menu-icon">📝</span>
-                    CMS Management</a></li>
-            <li><a href="{{ url_for('admin_content') }}"
-                    class="{{ 'active' if request.endpoint == 'admin_content' else '' }}"><span
-                        class="menu-icon">📰</span> Konten & Promo</a></li>
-            <li><a href="{{ url_for('admin_events') }}"
-                    class="{{ 'active' if request.endpoint == 'admin_events' else '' }}"><span
-                        class="menu-icon">📅</span> Event</a></li>
+            <div class="sidebar-menu-group">
+                <div class="sidebar-menu-title"><span>Content</span> <i>▼</i></div>
+                <div class="group-items">
+                    <li><a href="{{ url_for('admin_cms') }}"
+                            class="{{ 'active' if request.endpoint == 'admin_cms' else '' }}"><span
+                                class="menu-icon">📝</span> <span>CMS Management</span></a></li>
+                    <li><a href="{{ url_for('admin_content') }}"
+                            class="{{ 'active' if request.endpoint == 'admin_content' else '' }}"><span
+                                class="menu-icon">📰</span> <span>Konten & Promo</span></a></li>
+                    <li><a href="{{ url_for('admin_events') }}"
+                            class="{{ 'active' if request.endpoint == 'admin_events' else '' }}"><span
+                                class="menu-icon">📅</span> <span>Event</span></a></li>
+                </div>
+            </div>
 
-            <li class="sidebar-menu-title">Reports</li>
-            <li><a href="{{ url_for('admin_feedback') }}"
-                    class="{{ 'active' if request.endpoint == 'admin_feedback' else '' }}"><span
-                        class="menu-icon">💬</span> Feedback</a></li>
-            <li><a href="{{ url_for('admin_analytics') }}"
-                    class="{{ 'active' if request.endpoint == 'admin_analytics' else '' }}"><span
-                        class="menu-icon">📈</span> Analytics</a></li>
+            <div class="sidebar-menu-group">
+                <div class="sidebar-menu-title"><span>Reports</span> <i>▼</i></div>
+                <div class="group-items">
+                    <li><a href="{{ url_for('admin_feedback') }}"
+                            class="{{ 'active' if request.endpoint == 'admin_feedback' else '' }}"><span
+                                class="menu-icon">💬</span> <span>Feedback</span></a></li>
+                    <li><a href="{{ url_for('admin_analytics') }}"
+                            class="{{ 'active' if request.endpoint == 'admin_analytics' else '' }}"><span
+                                class="menu-icon">📈</span> <span>Analytics</span></a></li>
+                </div>
+            </div>
 
-            <li class="sidebar-menu-title">System</li>
-            <li><a href="{{ url_for('admin_users') }}"
-                    class="{{ 'active' if request.endpoint == 'admin_users' else '' }}"><span
-                        class="menu-icon">👥</span> Manajemen Pengguna</a></li>
-            <li><a href="{{ url_for('home') }}" target="_blank"><span class="menu-icon">🌐</span> Lihat Website</a></li>
-            <li><a href="{{ url_for('admin_logout') }}" style="color: #ef4444;"><span class="menu-icon">🚪</span>
-                    Logout</a></li>
+            <div class="sidebar-menu-group">
+                <div class="sidebar-menu-title"><span>System</span> <i>▼</i></div>
+                <div class="group-items">
+                    <li><a href="{{ url_for('home') }}" target="_blank"><span class="menu-icon">🌐</span> <span>Lihat
+                                Website</span></a></li>
+                    <li><a href="{{ url_for('admin_logout') }}" style="color: #ef4444;"><span
+                                class="menu-icon">🚪</span>
+                            <span>Logout</span></a></li>
+                </div>
+            </div>
         </ul>
     </aside>
 
     <main class="main-content">
         <header class="header">
-            <div class="header-title">
-                <h1>{{ title }}</h1>
-                <p>{{ subtitle if subtitle else 'Selamat datang di platform manajemen pariwisata' }}</p>
+            <div style="display: flex; align-items: center;">
+                <button id="sidebarToggle" class="toggle-btn" title="Toggle Sidebar">☰</button>
+                <div class="header-title">
+                    <h1>{{ title }}</h1>
+                    <p>{{ subtitle if subtitle else 'Selamat datang di platform manajemen pariwisata' }}</p>
+                </div>
             </div>
             <div class="header-user">
                 <div>
@@ -527,9 +666,41 @@
     </main>
 
     <script>
-        // Mobile menu toggle
         document.addEventListener('DOMContentLoaded', function () {
-            // Add mobile menu button if needed
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const body = document.body;
+
+            // Check for saved sidebar state
+            if (localStorage.getItem('sidebar-collapsed') === 'true') {
+                body.classList.add('sidebar-collapsed');
+            }
+
+            sidebarToggle.addEventListener('click', function () {
+                body.classList.toggle('sidebar-collapsed');
+                localStorage.setItem('sidebar-collapsed', body.classList.contains('sidebar-collapsed'));
+            });
+
+            // Accordion Sections
+            const groupTitles = document.querySelectorAll('.sidebar-menu-title');
+            groupTitles.forEach(title => {
+                title.addEventListener('click', function () {
+                    if (body.classList.contains('sidebar-collapsed')) return;
+
+                    const group = this.parentElement;
+                    group.classList.toggle('group-collapsed');
+
+                    // Save state
+                    const groupName = this.querySelector('span').innerText;
+                    localStorage.setItem(`group-${groupName}-collapsed`, group.classList.contains('group-collapsed'));
+                });
+
+                // Load group collapsed state
+                const group = title.parentElement;
+                const groupName = title.querySelector('span').innerText;
+                if (localStorage.getItem(`group-${groupName}-collapsed`) === 'true') {
+                    group.classList.add('group-collapsed');
+                }
+            });
         });
     </script>
 </body>
