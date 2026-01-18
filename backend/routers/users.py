@@ -201,7 +201,7 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
 @router.get("/stats/overview")
 def get_user_stats(db: Session = Depends(get_db)):
     total = db.query(User).count()
-    active = db.query(User).filter(User.is_active == True).count()
+    active = db.query(User).filter(User.is_active.is_(True)).count()
     by_role = {}
     for role in ROLES:
         count = db.query(User).filter(User.role == role).count()

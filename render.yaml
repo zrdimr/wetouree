@@ -1,0 +1,33 @@
+services:
+  # --- Backend Service (FastAPI) ---
+  - type: web
+    name: pulau-harapan-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_PATH
+        value: /var/lib/data/tourism.db
+      - key: PYTHON_VERSION
+        value: 3.10.12
+    disk:
+      name: sqlite-data
+      mountPath: /var/lib/data
+      sizeGB: 1
+
+  # --- Frontend Service (Flask) ---
+  - type: web
+    name: pulau-harapan-frontend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python frontend/app.py
+    envVars:
+      - key: API_URL
+        fromService:
+          type: web
+          name: pulau-harapan-backend
+          property: host
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.10.12

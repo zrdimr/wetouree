@@ -9,12 +9,14 @@ router = APIRouter(prefix="/destinations", tags=["destinations"])
 class DestinationBase(BaseModel):
     name: str
     description: str
-    image_url: str
+    image_url: Optional[str] = None
     type: Optional[str] = "alam"
     status: Optional[str] = "open"
     capacity: Optional[int] = 100
     current_visitors: Optional[int] = 0
     weather_info: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
 
 class DestinationCreate(DestinationBase):
     pass
@@ -26,8 +28,6 @@ class DestinationUpdate(BaseModel):
 
 class Destination(DestinationBase):
     id: int
-    latitude: Optional[float] = None
-    longitude: Optional[float] = None
 
     class Config:
         from_attributes = True

@@ -39,10 +39,10 @@ def create_content(content: ContentCreate, db: Session = Depends(database.get_db
     return db_content
 
 @router.get("/", response_model=List[Content])
-def read_contents(db: Session = Depends(database.get_db), all: bool = True):
+def read_contents(db: Session = Depends(database.get_db), show_all: bool = True):
     query = db.query(models.Content)
-    if not all:
-        query = query.filter(models.Content.is_published == True)
+    if not show_all:
+        query = query.filter(models.Content.is_published.is_(True))
     return query.all()
 
 @router.get("/{content_id}", response_model=Content)

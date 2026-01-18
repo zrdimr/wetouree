@@ -56,7 +56,7 @@ def get_all_guides(db: Session = Depends(database.get_db)):
 
 @router.get("/available", response_model=List[Guide])
 def get_available_guides(db: Session = Depends(database.get_db)):
-    guides = db.query(models.TourGuide).filter(models.TourGuide.is_available == True).all()
+    guides = db.query(models.TourGuide).filter(models.TourGuide.is_available.is_(True)).all()
     return guides
 
 @router.get("/{guide_id}", response_model=Guide)

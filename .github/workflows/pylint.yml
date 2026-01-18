@@ -32,6 +32,10 @@ jobs:
         # Run pylint with root in PYTHONPATH
         export PYTHONPATH=$PYTHONPATH:.
         pylint --rcfile=.pylintrc backend/ frontend/ seed_db.py
+    - name: Run tests with pytest
+      run: |
+        export PYTHONPATH=$PYTHONPATH:.
+        pytest tests/
 
   smoke-test:
     runs-on: ubuntu-latest

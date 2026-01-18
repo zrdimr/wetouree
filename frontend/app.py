@@ -3,9 +3,11 @@ import secrets
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from functools import wraps
 
+import os
+
 app = Flask(__name__)
-app.secret_key = secrets.token_hex(16)
-API_URL = "http://localhost:8000"
+app.secret_key = os.environ.get("SECRET_KEY", secrets.token_hex(16))
+API_URL = os.environ.get("API_URL", "http://localhost:8000")
 
 # --- Admin Authentication ---
 def login_required(f):
@@ -634,4 +636,5 @@ def umkm_detail(umkm_id):
         return f"Error: {str(e)}", 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=6004)
+    port = int(os.environ.get("PORT", 6004))
+    app.run(host='0.0.0.0', port=port, debug=True)

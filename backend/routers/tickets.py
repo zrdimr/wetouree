@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from pydantic import BaseModel
 from backend import models, database
+from datetime import datetime
 import uuid
 
 router = APIRouter(prefix="/tickets", tags=["tickets"])
@@ -67,7 +68,6 @@ def check_in_ticket(request: CheckInRequest, db: Session = Depends(database.get_
         raise HTTPException(status_code=400, detail="Ticket expired")
     
     # Mark ticket as used
-    from datetime import datetime
     ticket.status = "used"
     ticket.check_in_time = datetime.utcnow()
     
