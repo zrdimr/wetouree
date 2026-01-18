@@ -1,0 +1,105 @@
+{% extends "admin_layout.html" %}
+
+{% block title %}Tour Guide{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card primary">
+        <div class="stat-label">Total Guide</div>
+        <div class="stat-value">{{ guides | length }}</div>
+    </div>
+    <div class="stat-card success">
+        <div class="stat-label">Tersedia</div>
+        <div class="stat-value">{{ available_count }}</div>
+    </div>
+    <div class="stat-card warning">
+        <div class="stat-label">Booking Aktif</div>
+        <div class="stat-value">{{ active_bookings }}</div>
+    </div>
+    <div class="stat-card gold">
+        <div class="stat-label">Pendapatan</div>
+        <div class="stat-value">Rp {{ "{:,.0f}".format(total_revenue) }}</div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">👨‍🏫 Daftar Tour Guide</h3>
+            <button class="btn btn-primary" onclick="alert('Form tambah guide coming soon!')">+ Tambah Guide</button>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px;">
+            {% for guide in guides %}
+            <div style="background: rgba(0,0,0,0.02); border-radius: 12px; overflow: hidden;">
+                <img src="{{ guide.image_url or 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300' }}"
+                    style="width: 100%; height: 130px; object-fit: cover;">
+                <div style="padding: 12px;">
+                    <span class="badge badge-{{ 'success' if guide.is_available else 'danger' }}"
+                        style="font-size: 10px;">
+                        {{ guide.specialty | upper }}
+                    </span>
+                    <h4 style="margin: 8px 0 4px; font-size: 14px;">{{ guide.name }}</h4>
+                    <p style="font-size: 11px; color: var(--text-secondary);">⭐ {{ guide.rating }} • {{ guide.languages
+                        }}</p>
+                    <p style="font-weight: 600; color: var(--primary);">Rp {{ "{:,.0f}".format(guide.price_per_day)
+                        }}/hari</p>
+                </div>
+            </div>
+            {% else %}
+            <p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary);">Belum ada guide</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">📋 Booking Guide</h3>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Guide</th>
+                    <th>Pemesan</th>
+                    <th>Tanggal</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.guide_name or 'Unknown' }}</td>
+                    <td>
+                        <div>{{ booking.customer_name }}</div>
+                        <div style="font-size: 11px; color: var(--text-secondary);">{{ booking.customer_phone }}</div>
+                    </td>
+                    <td style="font-size: 12px;">{{ booking.booking_date }} ({{ booking.duration_days }} hari)</td>
+                    <td>
+                        {% if booking.status == 'pending' %}
+                        <span class="badge badge-warning">Pending</span>
+                        {% elif booking.status == 'confirmed' %}
+                        <span class="badge badge-primary">Confirmed</span>
+                        {% elif booking.status == 'completed' %}
+                        <span class="badge badge-success">Selesai</span>
+                        {% else %}
+                        <span class="badge">{{ booking.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form action="{{ url_for('update_guide_booking_status', booking_id=booking.id) }}" method="POST"
+                            style="display: inline;">
+                            <input type="hidden" name="status" value="confirmed">
+                            <button class="btn btn-success btn-sm" type="submit">✓</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center; color: var(--text-secondary);">Belum ada booking</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

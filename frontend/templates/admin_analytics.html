@@ -1,0 +1,187 @@
+{% extends "admin_layout.html" %}
+
+{% block title %}Analytics{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card primary">
+        <div class="stat-label">Total Pengunjung (Bulan Ini)</div>
+        <div class="stat-value">{{ total_visitors }}</div>
+        <div class="stat-change up">↑ 15% dari bulan lalu</div>
+    </div>
+    <div class="stat-card success">
+        <div class="stat-label">Total Pendapatan</div>
+        <div class="stat-value">Rp {{ "{:,.0f}".format(total_revenue) }}</div>
+        <div class="stat-change up">↑ 22% dari bulan lalu</div>
+    </div>
+    <div class="stat-card warning">
+        <div class="stat-label">Rata-rata Lama Tinggal</div>
+        <div class="stat-value">2.5 Hari</div>
+    </div>
+    <div class="stat-card gold">
+        <div class="stat-label">Kepuasan Pengunjung</div>
+        <div class="stat-value">4.6 ⭐</div>
+        <div class="stat-change up">↑ 0.2 dari bulan lalu</div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">📈 Tren Kunjungan (30 Hari)</h3>
+        </div>
+        <div class="chart-container">
+            <canvas id="visitorTrendChart"></canvas>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">🥧 Distribusi Pengunjung per Destinasi</h3>
+        </div>
+        <div class="chart-container">
+            <canvas id="destinationPieChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">🌍 Asal Wisatawan</h3>
+        </div>
+        <div class="chart-container">
+            <canvas id="originChart"></canvas>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">💰 Pendapatan per Kategori</h3>
+        </div>
+        <div class="chart-container">
+            <canvas id="revenueChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">🤖 AI Insights & Rekomendasi</h3>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+        <div
+            style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05)); padding: 20px; border-radius: 12px; border-left: 4px solid var(--success);">
+            <div style="font-size: 24px; margin-bottom: 10px;">⏰</div>
+            <h4 style="margin-bottom: 8px;">Jam Kunjungan Optimal</h4>
+            <p style="font-size: 14px; color: var(--text-secondary);">Berdasarkan data, jam 09:00-11:00 adalah waktu
+                terbaik untuk kunjungan dengan crowd level terendah.</p>
+        </div>
+        <div
+            style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05)); padding: 20px; border-radius: 12px; border-left: 4px solid var(--secondary);">
+            <div style="font-size: 24px; margin-bottom: 10px;">📅</div>
+            <h4 style="margin-bottom: 8px;">Event Timing</h4>
+            <p style="font-size: 14px; color: var(--text-secondary);">Rekomendasi: Adakan event besar di akhir pekan
+                ke-2 dan ke-4 setiap bulan untuk maksimalkan attendance.</p>
+        </div>
+        <div
+            style="background: linear-gradient(135deg, rgba(212, 163, 115, 0.1), rgba(212, 163, 115, 0.05)); padding: 20px; border-radius: 12px; border-left: 4px solid var(--gold);">
+            <div style="font-size: 24px; margin-bottom: 10px;">🎯</div>
+            <h4 style="margin-bottom: 8px;">Target Market</h4>
+            <p style="font-size: 14px; color: var(--text-secondary);">65% pengunjung berasal dari Jakarta. Pertimbangkan
+                promo khusus untuk pasar Surabaya dan Bandung.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Visitor Trend Chart
+    new Chart(document.getElementById('visitorTrendChart'), {
+        type: 'line',
+        data: {
+            labels: Array.from({ length: 30 }, (_, i) => i + 1),
+            datasets: [{
+                label: 'Pengunjung',
+                data: [120, 150, 180, 140, 200, 250, 300, 280, 320, 290, 350, 380, 400, 420, 450, 410, 480, 520, 500, 550, 580, 600, 650, 620, 700, 680, 720, 750, 800, 850],
+                borderColor: '#3282b8',
+                backgroundColor: 'rgba(50, 130, 184, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Destination Pie Chart
+    new Chart(document.getElementById('destinationPieChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Pulau Harapan', 'Pulau Macan', 'Pulau Pramuka', 'Pulau Tidung'],
+            datasets: [{
+                data: [35, 25, 22, 18],
+                backgroundColor: ['#0f4c75', '#3282b8', '#d4a373', '#10b981']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+
+    // Origin Chart
+    new Chart(document.getElementById('originChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Jakarta', 'Bandung', 'Surabaya', 'Yogyakarta', 'Lainnya'],
+            datasets: [{
+                label: 'Wisatawan',
+                data: [650, 180, 120, 80, 150],
+                backgroundColor: ['#0f4c75', '#3282b8', '#bbe1fa', '#d4a373', '#64748b']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Revenue Chart
+    new Chart(document.getElementById('revenueChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Tiket', 'Paket', 'UMKM', 'Lainnya'],
+            datasets: [{
+                label: 'Pendapatan (Juta)',
+                data: [85, 120, 45, 20],
+                backgroundColor: ['#10b981', '#3282b8', '#d4a373', '#64748b']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+                y: { grid: { display: false } }
+            }
+        }
+    });
+</script>
+{% endblock %}

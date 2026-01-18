@@ -36,20 +36,41 @@
 
     <section id="destinations" class="section">
         <div class="container">
-            <h2>Popular Destinations</h2>
+            <h2>🏝️ Destinasi Populer</h2>
+            <p style="text-align: center; margin-bottom: 30px; color: #64748b;">Jelajahi keindahan pulau-pulau di
+                Kepulauan Seribu</p>
             <div class="grid">
                 {% for dest in destinations %}
-                <div class="card">
-                    <img src="{{ dest.image_url }}" alt="{{ dest.name }}"
-                        style="width:100%; height:200px; object-fit:cover;">
+                <a href="{{ url_for('destination_detail', destination_id=dest.id) }}" class="card"
+                    style="text-decoration: none; color: inherit; transition: transform 0.3s, box-shadow 0.3s;">
+                    <div style="position: relative; overflow: hidden;">
+                        <img src="{{ dest.image_url }}" alt="{{ dest.name }}"
+                            style="width:100%; height:200px; object-fit:cover; transition: transform 0.5s;">
+                        <span
+                            style="position: absolute; top: 15px; left: 15px; background: {{ '#10b981' if dest.status == 'open' else '#ef4444' }}; color: #fff; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;">
+                            {{ '🟢 Buka' if dest.status == 'open' else '🔴 Tutup' }}
+                        </span>
+                    </div>
                     <div class="card-content">
                         <h3>{{ dest.name }}</h3>
-                        <p>{{ dest.description }}</p>
+                        <p style="color: #64748b; font-size: 14px; margin-bottom: 10px;">{{ dest.description[:80] }}...
+                        </p>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
+                            <span style="color: #0f4c75;">📍 {{ dest.type | capitalize }}</span>
+                            <span style="color: #f59e0b;">👥 {{ dest.capacity }} max</span>
+                        </div>
                     </div>
-                </div>
+                </a>
                 {% else %}
-                <p>No destinations available at the moment.</p>
+                <p style="grid-column: 1/-1; text-align: center;">Belum ada destinasi tersedia.</p>
                 {% endfor %}
+            </div>
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="{{ url_for('all_destinations') }}" class="btn-primary"
+                    style="text-decoration: none; display: inline-block; padding: 14px 40px; font-size: 16px;">
+                    Lihat Semua Destinasi →
+                </a>
             </div>
         </div>
     </section>
@@ -79,8 +100,167 @@
         </div>
     </section>
 
+    <!-- UMKM Section -->
+    <section id="umkm" class="section">
+        <div class="container">
+            <h2>UMKM Lokal</h2>
+            <p style="text-align: center; margin-bottom: 30px; color: #666;">Dukung ekonomi lokal dengan produk dan
+                layanan dari masyarakat Kepulauan Seribu</p>
+            <div class="grid">
+                {% for umkm in umkm_list %}
+                <div class="card">
+                    <img src="{{ umkm.image_url or 'https://via.placeholder.com/400x200?text=UMKM' }}"
+                        alt="{{ umkm.name }}" style="width:100%; height:150px; object-fit:cover;">
+                    <div class="card-content">
+                        <h3>{{ umkm.name }}</h3>
+                        <p>{{ umkm.description[:80] }}...</p>
+                        <span
+                            style="display: inline-block; padding: 4px 10px; background: #e0e7ff; color: #3730a3; border-radius: 15px; font-size: 12px;">{{
+                            umkm.category | capitalize }}</span>
+                    </div>
+                </div>
+                {% else %}
+                <p>Belum ada UMKM terdaftar.</p>
+                {% endfor %}
+            </div>
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="{{ url_for('marketplace') }}" class="btn-primary" style="text-decoration: none;">Lihat Semua
+                    UMKM →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Camping Rental Section -->
+    <section id="rental" class="section"
+        style="background: linear-gradient(135deg, #166534 0%, #15803d 100%); color: #fff;">
+        <div class="container">
+            <h2 style="color: #fff;">⛺ Sewa Alat Camping</h2>
+            <p style="text-align: center; margin-bottom: 30px; opacity: 0.9;">Nikmati pengalaman berkemah di Kepulauan
+                Seribu dengan peralatan lengkap!</p>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px;">
+                <div class="card" style="background: rgba(255,255,255,0.1); border: none;">
+                    <div class="card-content" style="text-align: center; color: #fff;">
+                        <div style="font-size: 40px; margin-bottom: 10px;">⛺</div>
+                        <h3 style="color: #fff;">Tenda</h3>
+                        <p style="opacity: 0.8; font-size: 14px;">2-8 orang</p>
+                    </div>
+                </div>
+                <div class="card" style="background: rgba(255,255,255,0.1); border: none;">
+                    <div class="card-content" style="text-align: center; color: #fff;">
+                        <div style="font-size: 40px; margin-bottom: 10px;">🛏️</div>
+                        <h3 style="color: #fff;">Sleeping Bag</h3>
+                        <p style="opacity: 0.8; font-size: 14px;">Hangat & nyaman</p>
+                    </div>
+                </div>
+                <div class="card" style="background: rgba(255,255,255,0.1); border: none;">
+                    <div class="card-content" style="text-align: center; color: #fff;">
+                        <div style="font-size: 40px; margin-bottom: 10px;">🍳</div>
+                        <h3 style="color: #fff;">Alat Masak</h3>
+                        <p style="opacity: 0.8; font-size: 14px;">Kompor & peralatan</p>
+                    </div>
+                </div>
+                <div class="card" style="background: rgba(255,255,255,0.1); border: none;">
+                    <div class="card-content" style="text-align: center; color: #fff;">
+                        <div style="font-size: 40px; margin-bottom: 10px;">💡</div>
+                        <h3 style="color: #fff;">Lampu</h3>
+                        <p style="opacity: 0.8; font-size: 14px;">LED & senter</p>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="{{ url_for('rental_page') }}" class="btn-primary"
+                    style="text-decoration: none; background: #fff; color: #166534;">Lihat Semua Alat →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tour Guide Section -->
+    <section id="guides" class="section"
+        style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #fff;">
+        <div class="container">
+            <h2 style="color: #fff;">👨‍🏫 Teman Main & Tour Guide</h2>
+            <p style="text-align: center; margin-bottom: 30px; opacity: 0.9;">Temukan pemandu lokal berpengalaman untuk
+                petualangan Anda!</p>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                <div class="card" style="background: rgba(255,255,255,0.1); border: none;">
+                    <div class="card-content" style="text-align: center; color: #fff;">
+                        <div style="font-size: 40px; margin-bottom: 10px;">🤿</div>
+                        <h3 style="color: #fff;">Snorkeling</h3>
+                        <p style="opacity: 0.8; font-size: 14px;">Guide berpengalaman</p>
+                    </div>
+                </div>
+                <div class="card" style="background: rgba(255,255,255,0.1); border: none;">
+                    <div class="card-content" style="text-align: center; color: #fff;">
+                        <div style="font-size: 40px; margin-bottom: 10px;">🌊</div>
+                        <h3 style="color: #fff;">Diving</h3>
+                        <p style="opacity: 0.8; font-size: 14px;">Sertifikasi PADI</p>
+                    </div>
+                </div>
+                <div class="card" style="background: rgba(255,255,255,0.1); border: none;">
+                    <div class="card-content" style="text-align: center; color: #fff;">
+                        <div style="font-size: 40px; margin-bottom: 10px;">📸</div>
+                        <h3 style="color: #fff;">Fotografer</h3>
+                        <p style="opacity: 0.8; font-size: 14px;">Dokumentasi trip</p>
+                    </div>
+                </div>
+                <div class="card" style="background: rgba(255,255,255,0.1); border: none;">
+                    <div class="card-content" style="text-align: center; color: #fff;">
+                        <div style="font-size: 40px; margin-bottom: 10px;">🏝️</div>
+                        <h3 style="color: #fff;">Island Tour</h3>
+                        <p style="opacity: 0.8; font-size: 14px;">Tur pulau lengkap</p>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="{{ url_for('guides_page') }}" class="btn-primary"
+                    style="text-decoration: none; background: #fff; color: #7c3aed;">Lihat Semua Guide →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section bg-light">
+        <div class="container">
+            <h2>Hubungi Kami</h2>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+                <div class="card">
+                    <div class="card-content" style="text-align: center;">
+                        <div style="font-size: 40px; margin-bottom: 15px;">📍</div>
+                        <h3>Alamat</h3>
+                        <p>Kantor Dinas Pariwisata<br>Kepulauan Seribu, DKI Jakarta</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-content" style="text-align: center;">
+                        <div style="font-size: 40px; margin-bottom: 15px;">📞</div>
+                        <h3>Telepon</h3>
+                        <p>+62 21 1234 5678<br>+62 812 3456 7890</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-content" style="text-align: center;">
+                        <div style="font-size: 40px; margin-bottom: 15px;">✉️</div>
+                        <h3>Email</h3>
+                        <p>info@pulauharapan.id<br>booking@pulauharapan.id</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-content" style="text-align: center;">
+                        <div style="font-size: 40px; margin-bottom: 15px;">⏰</div>
+                        <h3>Jam Operasional</h3>
+                        <p>Senin - Jumat: 08:00 - 17:00<br>Sabtu: 08:00 - 14:00</p>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="{{ url_for('emergency_page') }}" class="btn-primary"
+                    style="text-decoration: none; background: #dc2626;">🚨 Bantuan Darurat</a>
+            </div>
+        </div>
+    </section>
+
     <footer class="footer">
-        <p>&copy; 2025 Pulau Harapan Tourism Management. All rights reserved.</p>
+        <p>&copy; 2026 Pulau Harapan Tourism Management. All rights reserved.</p>
     </footer>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>

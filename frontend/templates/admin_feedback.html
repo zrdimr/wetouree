@@ -1,0 +1,67 @@
+{% extends "admin_layout.html" %}
+
+{% block title %}Feedback{% endblock %}
+
+{% block content %}
+<div class="stats-grid" style="margin-bottom: 20px;">
+    <div class="stat-card primary">
+        <div class="stat-label">Total Feedback</div>
+        <div class="stat-value">{{ feedback_list | length }}</div>
+    </div>
+    <div class="stat-card danger">
+        <div class="stat-label">🚨 Emergency</div>
+        <div class="stat-value">{{ emergency_count }}</div>
+    </div>
+    <div class="stat-card warning">
+        <div class="stat-label">⏳ Pending</div>
+        <div class="stat-value">{{ pending_count }}</div>
+    </div>
+    <div class="stat-card success">
+        <div class="stat-label">✓ Resolved</div>
+        <div class="stat-value">{{ resolved_count }}</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">💬 Daftar Feedback & Laporan</h3>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tipe</th>
+                <th>Subject</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fb in feedback_list %}
+            <tr>
+                <td>#{{ fb.id }}</td>
+                <td>
+                    {% if fb.type == 'emergency' %}<span class="badge badge-danger">🚨 Emergency</span>
+                    {% else %}<span class="badge badge-primary">{{ fb.type }}</span>{% endif %}
+                </td>
+                <td>{{ fb.subject }}</td>
+                <td><span class="badge badge-{{ 'success' if fb.status == 'resolved' else 'warning' }}">{{ fb.status
+                        }}</span></td>
+                <td>
+                    <form action="{{ url_for('update_feedback_status', feedback_id=fb.id) }}" method="POST"
+                        style="display:inline;">
+                        <input type="hidden" name="status" value="resolved">
+                        <button class="btn btn-success btn-sm">✓</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="text-align:center;color:var(--text-secondary);padding:40px;">Belum ada feedback
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

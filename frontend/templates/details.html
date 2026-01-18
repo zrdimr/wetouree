@@ -1,56 +1,333 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ package.name }} - Pulau Harapan Tourism</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
-        .details-container {
-            max-width: 800px;
-            margin: 100px auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        :root {
+            --primary: #0f4c75;
+            --secondary: #3282b8;
+            --gold: #d4a373;
+            --success: #10b981;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --text-light: #64748b;
         }
 
-        .package-header {
-            text-align: center;
-            margin-bottom: 30px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .package-price {
-            font-size: 2rem;
-            color: var(--secondary-color);
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 12px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .navbar-brand {
+            font-size: 20px;
             font-weight: 700;
         }
 
-        .booking-form {
-            margin-top: 40px;
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #authButton {
+            background: #fff;
+            color: var(--primary);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        #userInfo {
+            display: none;
+            align-items: center;
+            color: #fff;
+            font-size: 13px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(15, 76, 117, 0.9), rgba(50, 130, 184, 0.8)),
+                url('https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=1600');
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            padding: 80px 30px;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--gold);
+            color: #000;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-price {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .hero-price span {
+            font-size: 18px;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .main-content h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .main-content h3 {
+            font-size: 18px;
+            margin: 25px 0 15px;
+            color: var(--primary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .feature-item {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .feature-icon {
+            font-size: 24px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feature-text {
+            font-weight: 500;
+        }
+
+        .highlights {
+            background: #fff;
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .highlight-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .highlight-item:last-child {
+            border-bottom: none;
+        }
+
+        .highlight-icon {
+            color: var(--success);
+            font-size: 18px;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.05);
+        }
+
+        /* Booking Card */
+        .booking-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 100px;
+        }
+
+        .booking-card h3 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .booking-price {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .booking-price span {
+            font-size: 16px;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+
+        .booking-rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #f59e0b;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 14px;
         }
 
         .form-group input {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
+            padding: 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: border 0.2s;
         }
 
-        /* Modal Styles */
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn-book {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-book:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(15, 76, 117, 0.3);
+        }
+
+        .trust-badges {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -59,125 +336,253 @@
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.8);
             justify-content: center;
             align-items: center;
         }
 
         .modal-content {
-            background-color: #fefefe;
-            margin: auto;
+            background: #fff;
             padding: 30px;
-            border: 1px solid #888;
+            border-radius: 20px;
+            max-width: 420px;
             width: 90%;
-            max-width: 400px;
-            border-radius: 10px;
             text-align: center;
+        }
+
+        .modal h2 {
+            margin-bottom: 20px;
         }
 
         .qris-image {
             width: 100%;
-            max-width: 300px;
-            margin: 20px 0;
+            max-width: 250px;
+            margin: 20px auto;
+            border-radius: 10px;
         }
 
         .btn-confirm {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
             width: 100%;
+            padding: 14px;
+            background: var(--success);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
         }
 
         .btn-close {
-            background-color: #dc3545;
-            color: white;
-            padding: 5px 10px;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
             border: none;
-            border-radius: 4px;
+            font-size: 24px;
             cursor: pointer;
-            float: right;
+            color: #666;
+        }
+
+        .footer {
+            background: var(--primary);
+            color: #fff;
+            text-align: center;
+            padding: 30px;
+            margin-top: 60px;
         }
     </style>
 </head>
 
 <body>
-    <nav class="navbar" style="position: sticky; background-color: var(--primary-color);">
-        <div class="logo">Pulau Harapan</div>
-        <div class="menu-toggle" id="mobile-menu-btn">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
+    <nav class="navbar">
+        <a href="{{ url_for('home') }}" class="navbar-brand">🏝️ Pulau Harapan</a>
+        <div class="navbar-links">
+            <a href="{{ url_for('home') }}">Beranda</a>
+            <a href="{{ url_for('marketplace') }}">Marketplace</a>
+            <a href="{{ url_for('rental_page') }}">Sewa Camping</a>
+            <a href="{{ url_for('guides_page') }}">Tour Guide</a>
         </div>
-        <ul class="nav-links">
-            <li><a href="{{ url_for('home') }}">Home</a></li>
-            <li><a href="{{ url_for('home') }}#destinations">Destinations</a></li>
-            <li><a href="{{ url_for('home') }}#packages">Packages</a></li>
-        </ul>
+        <div class="auth-section">
+            <button id="authButton" onclick="signInWithGoogle()">
+                <img src="https://www.google.com/favicon.ico" width="14" height="14"> Login
+            </button>
+            <div id="userInfo"></div>
+        </div>
     </nav>
 
-    <div class="details-container">
-        <div class="package-header">
-            <h1>{{ package.name }}</h1>
-            <p class="package-price">IDR {{ "{:,.0f}".format(package.price) }}</p>
+    <section class="hero">
+        <span class="hero-badge">✨ Paket Terpopuler</span>
+        <h1>{{ package.name }}</h1>
+        <div class="hero-price">
+            IDR {{ "{:,.0f}".format(package.price) }}
+            <span>/orang</span>
         </div>
+    </section>
 
-        <div class="package-info">
-            <h3>Package Includes:</h3>
-            <ul class="features" style="background: none; padding: 0;">
-                {% for feature in package.features %}
-                <li>{{ feature }}</li>
-                {% endfor %}
-            </ul>
-        </div>
+    <div class="container">
+        <div class="content-grid">
+            <div class="main-content">
+                <h2>Yang Termasuk dalam Paket</h2>
+                <div class="features-grid">
+                    {% for feature in package.features %}
+                    <div class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <span class="feature-text">{{ feature }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
 
-        <div class="booking-form">
-            <h2>Book This Trip</h2>
-            <form id="bookingForm" onsubmit="return showPayment(event)">
-                <div class="form-group">
-                    <label for="name">Full Name</label>
-                    <input type="text" id="name" required>
+                <h3>📍 Destinasi yang Dikunjungi</h3>
+                <div class="highlights">
+                    <div class="highlight-item">
+                        <span class="highlight-icon">🏝️</span>
+                        <span>Pulau Harapan - Snorkeling & Sunset View</span>
+                    </div>
+                    <div class="highlight-item">
+                        <span class="highlight-icon">🐠</span>
+                        <span>Pulau Gosong - Underwater Paradise</span>
+                    </div>
+                    <div class="highlight-item">
+                        <span class="highlight-icon">🌅</span>
+                        <span>Pulau Macan - Sunrise Point</span>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" required>
+
+                <h3>📸 Galeri</h3>
+                <div class="gallery">
+                    <img src="https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=400" alt="Beach">
+                    <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400" alt="Diving">
+                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400" alt="Sunset">
+                    <img src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=400" alt="Ocean">
+                    <img src="https://images.unsplash.com/photo-1468413253725-0d5181091126?w=400" alt="Boat">
+                    <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?w=400" alt="Shore">
                 </div>
-                <div class="form-group">
-                    <label for="date">Travel Date</label>
-                    <input type="date" id="date" required>
+
+                <h3>ℹ️ Informasi Penting</h3>
+                <div class="highlights">
+                    <div class="highlight-item">
+                        <span class="highlight-icon">⏰</span>
+                        <span>Durasi: 2 Hari 1 Malam</span>
+                    </div>
+                    <div class="highlight-item">
+                        <span class="highlight-icon">👥</span>
+                        <span>Minimal 2 orang per booking</span>
+                    </div>
+                    <div class="highlight-item">
+                        <span class="highlight-icon">🚢</span>
+                        <span>Keberangkatan dari Muara Angke, Jakarta</span>
+                    </div>
+                    <div class="highlight-item">
+                        <span class="highlight-icon">📅</span>
+                        <span>Tersedia setiap hari (cuaca permitting)</span>
+                    </div>
                 </div>
-                <button type="submit" class="btn-primary" style="width: 100%; border: none; cursor: pointer;">Proceed to
-                    Payment</button>
-            </form>
+            </div>
+
+            <div class="booking-sidebar">
+                <div class="booking-card">
+                    <h3>Pesan Sekarang</h3>
+                    <div class="booking-price">
+                        IDR {{ "{:,.0f}".format(package.price) }}
+                        <span>/orang</span>
+                    </div>
+                    <div class="booking-rating">
+                        <span>⭐⭐⭐⭐⭐</span>
+                        <span>4.9 (128 reviews)</span>
+                    </div>
+
+                    <form id="bookingForm" onsubmit="return showPayment(event)">
+                        <div class="form-group">
+                            <label>Nama Lengkap</label>
+                            <input type="text" id="name" placeholder="Masukkan nama Anda" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="email" placeholder="email@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tanggal Keberangkatan</label>
+                            <input type="date" id="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Jumlah Peserta</label>
+                            <input type="number" id="visitors" value="1" min="1" max="20">
+                        </div>
+                        <button type="submit" class="btn-book">🎫 Booking Sekarang</button>
+                    </form>
+
+                    <div class="trust-badges">
+                        <span class="trust-badge">🔒 Pembayaran Aman</span>
+                        <span class="trust-badge">✅ Konfirmasi Instan</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- QRIS Modal -->
     <div id="qrisModal" class="modal">
-        <div class="modal-content">
-            <button class="btn-close" onclick="closeModal()">X</button>
-            <h2>Scan QRIS to Pay</h2>
-            <p>Total: <strong>IDR {{ "{:,.0f}".format(package.price) }}</strong></p>
-            <!-- Placeholder for QRIS -->
+        <div class="modal-content" style="position: relative;">
+            <button class="btn-close" onclick="closeModal()">&times;</button>
+            <h2>💳 Pembayaran QRIS</h2>
+            <p style="color: var(--text-light);">Scan QR code dengan aplikasi e-wallet Anda</p>
+            <p style="font-size: 24px; font-weight: 700; color: var(--primary); margin: 15px 0;">
+                IDR <span id="totalPrice">0</span>
+            </p>
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png"
                 alt="QRIS Code" class="qris-image">
-            <p>After scanning, click confirm below.</p>
-            <button class="btn-confirm" onclick="confirmBooking()">I Have Paid</button>
+            <p style="font-size: 13px; color: var(--text-light);">Setelah pembayaran, klik konfirmasi di bawah</p>
+            <button class="btn-confirm" onclick="confirmBooking()">✅ Saya Sudah Bayar</button>
         </div>
     </div>
 
     <footer class="footer">
-        <p>&copy; 2024 Pulau Harapan Tourism Management. All rights reserved.</p>
+        <p>&copy; 2026 Pulau Harapan Tourism. All rights reserved.</p>
     </footer>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="{{ url_for('static', filename='js/firebase-auth.js') }}"></script>
+
     <script>
+        const API_URL = "http://localhost:8000";
+        const PACKAGE_ID = {{ package.id }};
+        const PACKAGE_PRICE = {{ package.price }};
+
+        // Pre-fill user data when logged in
+        if (typeof auth !== 'undefined') {
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    document.getElementById('name').value = user.displayName || '';
+                    document.getElementById('email').value = user.email || '';
+                }
+            });
+        }
+
         function showPayment(event) {
             event.preventDefault();
+
+            if (typeof currentUser === 'undefined' || !currentUser) {
+                alert('Silakan login terlebih dahulu untuk melakukan booking');
+                signInWithGoogle();
+                return false;
+            }
+
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const date = document.getElementById('date').value;
+            const visitors = parseInt(document.getElementById('visitors').value);
+
+            if (!name || !email || !date) {
+                alert('Lengkapi semua field');
+                return false;
+            }
+
+            const total = PACKAGE_PRICE * visitors;
+            document.getElementById('totalPrice').textContent = total.toLocaleString('id-ID');
             document.getElementById('qrisModal').style.display = 'flex';
             return false;
         }
@@ -186,10 +591,52 @@
             document.getElementById('qrisModal').style.display = 'none';
         }
 
-        function confirmBooking() {
-            // Here you would typically send data to backend
-            alert("Booking Confirmed! Thank you for your payment.");
-            window.location.href = "{{ url_for('home') }}";
+        async function confirmBooking() {
+            if (typeof currentUser === 'undefined' || !currentUser) {
+                alert('Silakan login terlebih dahulu');
+                return;
+            }
+
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const date = document.getElementById('date').value;
+            const visitors = parseInt(document.getElementById('visitors').value);
+
+            const btn = document.querySelector('.btn-confirm');
+            btn.disabled = true;
+            btn.textContent = 'Memproses...';
+
+            try {
+                const response = await fetch(`${API_URL}/bookings/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        customer_name: name,
+                        email: email,
+                        package_id: PACKAGE_ID,
+                        date: date,
+                        status: 'pending',
+                        num_visitors: visitors,
+                        total_price: PACKAGE_PRICE * visitors
+                    })
+                });
+
+                if (response.ok) {
+                    const booking = await response.json();
+                    alert(`🎉 Booking berhasil!\n\nID: #${booking.id}\nTotal: IDR ${(PACKAGE_PRICE * visitors).toLocaleString('id-ID')}`);
+                    window.location.href = `/ticket/${booking.id}`;
+                } else {
+                    const error = await response.json();
+                    alert('Booking gagal: ' + (error.detail || 'Unknown error'));
+                    btn.disabled = false;
+                    btn.textContent = '✅ Saya Sudah Bayar';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan. Silakan coba lagi.');
+                btn.disabled = false;
+                btn.textContent = '✅ Saya Sudah Bayar';
+            }
         }
     </script>
 </body>

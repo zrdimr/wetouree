@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ destination.name }} - Pulau Harapan Tourism</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f4c75;
+            --secondary: #3282b8;
+            --gold: #d4a373;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --text-light: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 12px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .navbar-brand {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .hero {
+            height: 60vh;
+            min-height: 400px;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6)),
+            url('{{ destination.image_url or "https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=1600" }}');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            padding: 60px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            color: #fff;
+        }
+
+        .hero-badge {
+            display: inline-block;
+
+            background: {
+                    {
+                    'var(--gold)' if destination.status=='open' else '#ef4444'
+                }
+            }
+
+            ;
+
+            color: {
+                    {
+                    '#000' if destination.status=='open' else '#fff'
+                }
+            }
+
+            ;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: 25px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 50px 20px;
+        }
+
+        .article-content {
+            background: #fff;
+            padding: 50px;
+            border-radius: 20px;
+            margin-top: -80px;
+            position: relative;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        .article-content h2 {
+            font-size: 28px;
+            margin: 40px 0 20px;
+            color: var(--primary);
+            border-left: 4px solid var(--gold);
+            padding-left: 20px;
+        }
+
+        .article-content h2:first-of-type {
+            margin-top: 0;
+        }
+
+        .article-content p {
+            margin-bottom: 20px;
+            font-size: 17px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .info-card-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .info-card-label {
+            font-size: 12px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .info-card-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .gallery-grid img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .gallery-grid img:hover {
+            transform: scale(1.03);
+        }
+
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .facilities-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .facility-tag {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .cta-box h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .cta-box p {
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .btn-cta {
+            display: inline-block;
+            background: #fff;
+            color: var(--primary);
+            padding: 14px 40px;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+
+        .btn-cta:hover {
+            transform: scale(1.05);
+        }
+
+        .related-section {
+            margin-top: 60px;
+        }
+
+        .related-section h3 {
+            font-size: 24px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .related-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s;
+        }
+
+        .related-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .related-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .related-card-content {
+            padding: 20px;
+        }
+
+        .related-card h4 {
+            margin-bottom: 8px;
+        }
+
+        .related-card p {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .footer {
+            background: var(--primary);
+            color: #fff;
+            text-align: center;
+            padding: 30px;
+            margin-top: 60px;
+        }
+
+        .weather-widget {
+            background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+            color: #fff;
+            padding: 20px 25px;
+            border-radius: 16px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .weather-icon {
+            font-size: 48px;
+        }
+
+        .weather-info h4 {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .weather-temp {
+            font-size: 28px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('home') }}" class="navbar-brand">🏝️ Pulau Harapan</a>
+        <div class="navbar-links">
+            <a href="{{ url_for('home') }}">Beranda</a>
+            <a href="{{ url_for('home') }}#destinations">Destinasi</a>
+            <a href="{{ url_for('marketplace') }}">Marketplace</a>
+        </div>
+    </nav>
+
+    <section class="hero"
+        style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url('{{ destination.image_url or 'https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=1600' }}');">
+        <div class="hero-content">
+            <span class="hero-badge">
+                {% if destination.status == 'open' %}🟢 Buka Sekarang{% elif destination.status == 'closed' %}🔴 Tutup{%
+                else %}🟡 Maintenance{% endif %}
+            </span>
+            <h1>{{ destination.name }}</h1>
+            <div class="hero-meta">
+                <span>📍 Kepulauan Seribu, DKI Jakarta</span>
+                <span>👥 Kapasitas: {{ destination.capacity }} pengunjung</span>
+                <span>🏷️ {{ destination.type | capitalize }}</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <article class="article-content">
+            <h2>Tentang {{ destination.name }}</h2>
+            <p>{{ destination.description }}</p>
+            <p>Pulau ini merupakan salah satu destinasi wisata favorit di kawasan Kepulauan Seribu. Dengan pemandangan
+                laut yang menakjubkan dan terumbu karang yang masih terjaga, tempat ini menawarkan pengalaman wisata
+                bahari yang tak terlupakan.</p>
+
+            <div class="weather-widget">
+                <div class="weather-icon">☀️</div>
+                <div class="weather-info">
+                    <h4>Cuaca Saat Ini</h4>
+                    <div class="weather-temp">{{ destination.weather_info or '28°C - Cerah' }}</div>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-card-icon">🌊</div>
+                    <div class="info-card-label">Tipe Wisata</div>
+                    <div class="info-card-value">{{ destination.type | capitalize }}</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-card-icon">👥</div>
+                    <div class="info-card-label">Kapasitas</div>
+                    <div class="info-card-value">{{ destination.capacity }} orang</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-card-icon">📊</div>
+                    <div class="info-card-label">Pengunjung Hari Ini</div>
+                    <div class="info-card-value">{{ destination.current_visitors or 0 }}</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-card-icon">📍</div>
+                    <div class="info-card-label">Koordinat</div>
+                    <div class="info-card-value">{{ destination.latitude or '-5.6' }}, {{ destination.longitude or
+                        '106.5' }}</div>
+                </div>
+            </div>
+
+            <h2>Galeri Foto</h2>
+            <div class="gallery-grid">
+                <img src="https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=600" alt="Beach View">
+                <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600" alt="Underwater">
+                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600" alt="Sunset">
+                <img src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=600" alt="Ocean">
+                <img src="https://images.unsplash.com/photo-1468413253725-0d5181091126?w=600" alt="Boat">
+                <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?w=600" alt="Shore">
+            </div>
+
+            <h2>Fasilitas Tersedia</h2>
+            <div class="facilities-list">
+                {% for facility in facilities %}
+                <span class="facility-tag">
+                    {% if facility.type == 'toilet' %}🚻{% elif facility.type == 'parking' %}🅿️{% elif facility.type ==
+                    'mushola' %}🕌{% else %}📍{% endif %}
+                    {{ facility.name }}
+                </span>
+                {% else %}
+                <span class="facility-tag">🏖️ Area Pantai</span>
+                <span class="facility-tag">🚻 Toilet Umum</span>
+                <span class="facility-tag">🅿️ Parkir Perahu</span>
+                <span class="facility-tag">🍽️ Warung Makan</span>
+                <span class="facility-tag">🏕️ Area Camping</span>
+                {% endfor %}
+            </div>
+
+            <h2>Tips Berkunjung</h2>
+            <p>Berikut beberapa tips untuk mengoptimalkan pengalaman wisata Anda:</p>
+            <ul style="margin-left: 20px; margin-bottom: 20px;">
+                <li>Datang saat musim kemarau (April-Oktober) untuk cuaca terbaik</li>
+                <li>Bawa sunscreen dan topi untuk perlindungan dari sinar matahari</li>
+                <li>Siapkan obat anti mabuk laut untuk perjalanan kapal</li>
+                <li>Jangan lupa membawa kamera underwater untuk snorkeling</li>
+                <li>Hormati lingkungan dan jangan buang sampah sembarangan</li>
+            </ul>
+
+            <div class="cta-box">
+                <h3>🎫 Siap Berlibur?</h3>
+                <p>Pesan paket wisata ke {{ destination.name }} sekarang dan dapatkan pengalaman tak terlupakan!</p>
+                <a href="{{ url_for('home') }}#packages" class="btn-cta">Lihat Paket Wisata</a>
+            </div>
+        </article>
+
+        <section class="related-section">
+            <h3>Destinasi Lainnya</h3>
+            <div class="related-grid">
+                {% for dest in related_destinations %}
+                <a href="{{ url_for('destination_detail', destination_id=dest.id) }}" class="related-card"
+                    style="text-decoration: none; color: inherit;">
+                    <img src="{{ dest.image_url or 'https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=400' }}"
+                        alt="{{ dest.name }}">
+                    <div class="related-card-content">
+                        <h4>{{ dest.name }}</h4>
+                        <p>{{ dest.description[:80] }}...</p>
+                    </div>
+                </a>
+                {% else %}
+                <p style="grid-column: 1/-1; text-align: center; color: var(--text-light);">Destinasi lainnya akan
+                    segera hadir</p>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 Pulau Harapan Tourism. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>

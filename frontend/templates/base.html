@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Pulau Harapan{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f4c75;
+            --secondary: #3282b8;
+            --gold: #d4a373;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --text-light: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 12px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .navbar-brand {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .navbar-links a {
+            font-size: 14px;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+
+        .navbar-links a:hover {
+            opacity: 1;
+        }
+
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #authButton {
+            background: #fff;
+            color: var(--primary);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s;
+        }
+
+        #authButton:hover {
+            transform: scale(1.02);
+        }
+
+        #userInfo {
+            display: none;
+            align-items: center;
+            color: #fff;
+        }
+
+        #userInfo img {
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 12px 15px;
+                flex-wrap: wrap;
+            }
+
+            .navbar-links {
+                gap: 10px;
+                font-size: 12px;
+            }
+
+            .auth-section {
+                margin-top: 10px;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('home') }}" class="navbar-brand">🏝️ Pulau Harapan</a>
+        <div class="navbar-links">
+            <a href="{{ url_for('home') }}">Beranda</a>
+            <a href="{{ url_for('marketplace') }}">Marketplace</a>
+            <a href="{{ url_for('rental_page') }}">Sewa Camping</a>
+            <a href="{{ url_for('guides_page') }}">Tour Guide</a>
+        </div>
+        <div class="auth-section">
+            <button id="authButton" onclick="signInWithGoogle()">
+                <img src="https://www.google.com/favicon.ico" width="16" height="16" alt="Google">
+                Login dengan Google
+            </button>
+            <div id="userInfo"></div>
+        </div>
+    </nav>
+
+    {% block content %}{% endblock %}
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="{{ url_for('static', filename='js/firebase-auth.js') }}"></script>
+
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

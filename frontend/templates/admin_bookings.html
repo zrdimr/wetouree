@@ -1,54 +1,94 @@
 {% extends "admin_layout.html" %}
 
+{% block title %}Tiket & Booking{% endblock %}
+
 {% block content %}
+<!-- Stats -->
+<div class="stats-grid" style="margin-bottom: 20px;">
+    <div class="stat-card success">
+        <div class="stat-label">Confirmed</div>
+        <div class="stat-value">{{ confirmed_count }}</div>
+    </div>
+    <div class="stat-card warning">
+        <div class="stat-label">Pending</div>
+        <div class="stat-value">{{ pending_count }}</div>
+    </div>
+    <div class="stat-card danger" style="--stat-color: var(--danger);">
+        <div class="stat-label">Cancelled</div>
+        <div class="stat-value">{{ cancelled_count }}</div>
+    </div>
+</div>
+
 <div class="card">
-    <h4>All Bookings</h4>
+    <div class="card-header">
+        <h3 class="card-title">🎫 Semua Booking</h3>
+        <div>
+            <input type="text" placeholder="Cari booking..."
+                style="padding: 10px 15px; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; margin-right: 10px;">
+            <select style="padding: 10px 15px; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px;">
+                <option>Semua Status</option>
+                <option>Pending</option>
+                <option>Confirmed</option>
+                <option>Cancelled</option>
+            </select>
+        </div>
+    </div>
     <table>
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Customer</th>
                 <th>Email</th>
-                <th>Package ID</th>
-                <th>Travel Date</th>
+                <th>Paket</th>
+                <th>Tanggal</th>
                 <th>Status</th>
-                <th>Action</th>
+                <th>Aksi</th>
             </tr>
         </thead>
         <tbody>
             {% for booking in bookings %}
             <tr>
-                <td>#{{ booking.id }}</td>
+                <td><strong>#{{ booking.id }}</strong></td>
                 <td>{{ booking.customer_name }}</td>
-                <td>{{ booking.email }}</td>
-                <td>{{ booking.package_id }}</td>
+                <td style="font-size: 13px; color: var(--text-secondary);">{{ booking.email }}</td>
+                <td>Paket #{{ booking.package_id }}</td>
                 <td>{{ booking.date }}</td>
                 <td>
-                    <span
-                        class="badge {% if booking.status == 'confirmed' %}bg-success{% elif booking.status == 'pending' %}bg-warning{% else %}bg-secondary{% endif %}">
-                        {{ booking.status }}
-                    </span>
+                    {% if booking.status == 'confirmed' %}
+                    <span class="badge badge-success">✓ Confirmed</span>
+                    {% elif booking.status == 'pending' %}
+                    <span class="badge badge-warning">⏳ Pending</span>
+                    {% elif booking.status == 'cancelled' %}
+                    <span class="badge badge-danger">✗ Cancelled</span>
+                    {% else %}
+                    <span class="badge">{{ booking.status }}</span>
+                    {% endif %}
                 </td>
                 <td>
                     {% if booking.status == 'pending' %}
                     <form action="{{ url_for('update_booking_status', booking_id=booking.id) }}" method="POST"
-                        style="display:inline;">
+                        style="display: inline;">
                         <input type="hidden" name="status" value="confirmed">
-                        <button type="submit" class="btn btn-success">Confirm</button>
+                        <button type="submit" class="btn btn-success btn-sm">Confirm</button>
                     </form>
                     {% endif %}
                     {% if booking.status != 'cancelled' %}
                     <form action="{{ url_for('update_booking_status', booking_id=booking.id) }}" method="POST"
-                        style="display:inline;">
+                        style="display: inline;">
                         <input type="hidden" name="status" value="cancelled">
-                        <button type="submit" class="btn btn-danger">Cancel</button>
+                        <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
                     </form>
+                    {% endif %}
+                    {% if booking.status == 'confirmed' %}
+                    <button class="btn btn-outline btn-sm" onclick="alert('QR Code untuk Booking #{{ booking.id }}')">🎫
+                        QR</button>
                     {% endif %}
                 </td>
             </tr>
             {% else %}
             <tr>
-                <td colspan="7" style="text-align:center;">No bookings available.</td>
+                <td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 30px;">Belum ada
+                    booking</td>
             </tr>
             {% endfor %}
         </tbody>

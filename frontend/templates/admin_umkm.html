@@ -1,0 +1,51 @@
+{% extends "admin_layout.html" %}
+
+{% block title %}UMKM{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">🏪 Daftar UMKM</h3>
+        <button class="btn btn-primary" onclick="alert('Fitur tambah UMKM coming soon!')">+ Tambah UMKM</button>
+    </div>
+
+    <div
+        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+        {% for umkm in umkm_list %}
+        <div style="background: rgba(0,0,0,0.02); border-radius: 12px; overflow: hidden;">
+            <img src="{{ umkm.image_url or 'https://via.placeholder.com/400x200?text=No+Image' }}" alt="{{ umkm.name }}"
+                style="width: 100%; height: 150px; object-fit: cover;">
+            <div style="padding: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div>
+                        <h4 style="margin-bottom: 5px;">{{ umkm.name }}</h4>
+                        <span class="badge badge-primary">{{ umkm.category | capitalize }}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 4px; color: var(--gold);">
+                        ⭐ {{ umkm.rating }}
+                    </div>
+                </div>
+                <p style="font-size: 13px; color: var(--text-secondary); margin: 10px 0;">
+                    {{ umkm.description[:80] }}...
+                </p>
+                <div style="font-size: 12px; color: var(--text-secondary);">
+                    📍 {{ umkm.location or 'Lokasi tidak tersedia' }}
+                </div>
+                <div style="margin-top: 12px; display: flex; gap: 8px;">
+                    {% if umkm.is_verified %}
+                    <span class="badge badge-success">✓ Verified</span>
+                    {% else %}
+                    <span class="badge badge-warning">Pending Verify</span>
+                    {% endif %}
+                    <button class="btn btn-outline btn-sm" style="margin-left: auto;">Edit</button>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-secondary);">
+            Belum ada UMKM terdaftar
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

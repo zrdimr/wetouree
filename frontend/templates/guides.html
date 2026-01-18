@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teman Main & Tour Guide - Pulau Harapan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f4c75;
+            --secondary: #3282b8;
+            --gold: #d4a373;
+            --bg: #f8fafc;
+            --text: #1e293b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 12px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .navbar-brand {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #authButton {
+            background: #fff;
+            color: var(--primary);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        #userInfo {
+            display: none;
+            align-items: center;
+            color: #fff;
+            font-size: 13px;
+        }
+
+        #userInfo img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: #fff;
+            padding: 50px 30px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            font-size: 16px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid #ddd;
+            border-radius: 30px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            border-color: #7c3aed;
+            background: #7c3aed;
+            color: #fff;
+        }
+
+        .guide-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .guide-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s;
+        }
+
+        .guide-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .guide-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .guide-content {
+            padding: 20px;
+        }
+
+        .guide-specialty {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(124, 58, 237, 0.1);
+            color: #7c3aed;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .guide-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .guide-rating {
+            color: #f59e0b;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .guide-desc {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .guide-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-top: 12px;
+            border-top: 1px solid #eee;
+        }
+
+        .guide-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #7c3aed;
+        }
+
+        .guide-langs {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .btn-book {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #7c3aed;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-book:hover {
+            background: #6d28d9;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 450px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .btn-close {
+            background: #eee;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .login-required {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('home') }}" class="navbar-brand">🏝️ Pulau Harapan</a>
+        <div class="navbar-links">
+            <a href="{{ url_for('home') }}">Beranda</a>
+            <a href="{{ url_for('marketplace') }}">Marketplace</a>
+            <a href="{{ url_for('rental_page') }}">Sewa Camping</a>
+            <a href="{{ url_for('guides_page') }}">Tour Guide</a>
+        </div>
+        <div class="auth-section">
+            <button id="authButton" onclick="signInWithGoogle()">
+                <img src="https://www.google.com/favicon.ico" width="14" height="14"> Login Google
+            </button>
+            <div id="userInfo"></div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>👨‍🏫 Teman Main & Tour Guide</h1>
+        <p>Temukan pemandu lokal berpengalaman untuk menemani petualangan Anda!</p>
+    </section>
+
+    <div class="container">
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterGuides('all')">Semua</button>
+            <button class="filter-btn" onclick="filterGuides('snorkeling')">🤿 Snorkeling</button>
+            <button class="filter-btn" onclick="filterGuides('diving')">🌊 Diving</button>
+            <button class="filter-btn" onclick="filterGuides('trekking')">🥾 Trekking</button>
+            <button class="filter-btn" onclick="filterGuides('photography')">📸 Foto</button>
+            <button class="filter-btn" onclick="filterGuides('general')">🏝️ General</button>
+        </div>
+
+        <div class="guide-grid">
+            {% for guide in guides %}
+            <div class="guide-card" data-specialty="{{ guide.specialty }}">
+                <img src="{{ guide.image_url or 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400' }}"
+                    alt="{{ guide.name }}" class="guide-image">
+                <div class="guide-content">
+                    <span class="guide-specialty">
+                        {% if guide.specialty == 'snorkeling' %}🤿{% elif guide.specialty == 'diving' %}🌊{% elif
+                        guide.specialty == 'trekking' %}🥾{% elif guide.specialty == 'photography' %}📸{% else %}🏝️{%
+                        endif %}
+                        {{ guide.specialty | capitalize }}
+                    </span>
+                    <h3 class="guide-name">{{ guide.name }}</h3>
+                    <div class="guide-rating">⭐ {{ guide.rating }} / 5.0</div>
+                    <p class="guide-desc">{{ guide.description[:100] }}...</p>
+                    <div class="guide-meta">
+                        <div class="guide-price">Rp {{ "{:,.0f}".format(guide.price_per_day) }}/hari</div>
+                        <div class="guide-langs">🌐 {{ guide.languages }}</div>
+                    </div>
+                    <button class="btn-book"
+                        onclick="handleBookClick({{ guide.id }}, '{{ guide.name }}', {{ guide.price_per_day }})">
+                        Booking Sekarang
+                    </button>
+                </div>
+            </div>
+            {% else %}
+            <div style="grid-column: 1/-1; text-align: center; padding: 60px; color: #64748b;">
+                <p style="font-size: 48px; margin-bottom: 15px;">👨‍🏫</p>
+                <p>Belum ada guide tersedia</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="bookModal" class="modal">
+        <div class="modal-content">
+            <h2>📝 Booking Tour Guide</h2>
+            <div id="loginNotice" class="login-required" style="display: none;">
+                ⚠️ Silakan login terlebih dahulu untuk melakukan booking
+                <br><button onclick="signInWithGoogle()"
+                    style="margin-top: 10px; padding: 8px 16px; background: #7c3aed; color: white; border: none; border-radius: 5px; cursor: pointer;">Login
+                    dengan Google</button>
+            </div>
+            <form id="bookForm" onsubmit="submitBooking(event)">
+                <input type="hidden" id="guideId">
+                <div class="form-group">
+                    <label>Guide</label>
+                    <input type="text" id="guideName" readonly style="background: #f5f5f5;">
+                </div>
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" id="customerName" required>
+                </div>
+                <div class="form-group">
+                    <label>No. HP / WhatsApp</label>
+                    <input type="tel" id="customerPhone" required>
+                </div>
+                <div class="form-group">
+                    <label>Tanggal Mulai</label>
+                    <input type="date" id="bookingDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Durasi (hari)</label>
+                    <input type="number" id="durationDays" min="1" value="1" required>
+                </div>
+                <div class="form-group">
+                    <label>Catatan (opsional)</label>
+                    <textarea id="notes" rows="2"
+                        placeholder="Aktivitas yang diinginkan, jumlah orang, dll."></textarea>
+                </div>
+                <div style="margin-top: 20px;">
+                    <button type="button" class="btn-close" onclick="closeModal()">Batal</button>
+                    <button type="submit" id="submitBtn" class="btn-book"
+                        style="display: inline; width: auto; padding: 10px 30px;">Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="{{ url_for('static', filename='js/firebase-auth.js') }}"></script>
+
+    <script>
+        const API_URL = "http://localhost:8000";
+        let pendingBooking = null;
+        
+        function filterGuides(specialty) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            document.querySelectorAll('.guide-card').forEach(card => {
+                card.style.display = (specialty === 'all' || card.dataset.specialty === specialty) ? 'block' : 'none';
+            });
+        }
+        
+        function handleBookClick(id, name, price) {
+            if (currentUser) {
+                openBookModal(id, name, price);
+            } else {
+                pendingBooking = { id, name, price };
+                alert('Silakan login terlebih dahulu untuk melakukan booking');
+                signInWithGoogle().then(() => {
+                    if (currentUser && pendingBooking) {
+                        openBookModal(pendingBooking.id, pendingBooking.name, pendingBooking.price);
+                        pendingBooking = null;
+                    }
+                });
+            }
+        }
+        
+        function openBookModal(id, name, price) {
+            document.getElementById('guideId').value = id;
+            document.getElementById('guideName').value = name;
+            
+            // Pre-fill user info if logged in
+            if (currentUser) {
+                document.getElementById('customerName').value = currentUser.displayName || '';
+                document.getElementById('loginNotice').style.display = 'none';
+                document.getElementById('submitBtn').disabled = false;
+            } else {
+                document.getElementById('loginNotice').style.display = 'block';
+                document.getElementById('submitBtn').disabled = true;
+            }
+            
+            document.getElementById('bookModal').style.display = 'flex';
+        }
+        
+        function closeModal() {
+            document.getElementById('bookModal').style.display = 'none';
+        }
+        
+        async function submitBooking(event) {
+            event.preventDefault();
+            
+            if (!currentUser) {
+                alert('Silakan login terlebih dahulu');
+                return;
+            }
+            
+            const data = {
+                guide_id: parseInt(document.getElementById('guideId').value),
+                customer_name: document.getElementById('customerName').value,
+                customer_phone: document.getElementById('customerPhone').value,
+                booking_date: document.getElementById('bookingDate').value,
+                duration_days: parseInt(document.getElementById('durationDays').value),
+                notes: document.getElementById('notes').value || null
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/guides/bookings/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    alert(`Booking berhasil! Total: Rp ${result.total_price.toLocaleString()}\n\nGuide akan menghubungi Anda untuk konfirmasi.`);
+                    location.reload();
+                } else {
+                    const error = await response.json();
+                    alert('Gagal: ' + (error.detail || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Terjadi kesalahan. Silakan coba lagi.');
+            }
+        }
+    </script>
+</body>
+
+</html>

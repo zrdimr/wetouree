@@ -1,0 +1,86 @@
+{% extends "admin_layout.html" %}
+
+{% block title %}Konten & Promo{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">📰 Manajemen Konten</h3>
+        <button class="btn btn-primary" onclick="showAddModal()">+ Tambah Konten</button>
+    </div>
+
+    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <button class="btn btn-outline btn-sm"
+            style="border-color: var(--primary); color: var(--primary);">Semua</button>
+        <button class="btn btn-outline btn-sm">📰 Berita</button>
+        <button class="btn btn-outline btn-sm">🎉 Event</button>
+        <button class="btn btn-outline btn-sm">🏷️ Promo</button>
+        <button class="btn btn-outline btn-sm">🗺️ Itinerary</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Konten</th>
+                <th>Tipe</th>
+                <th>Bahasa</th>
+                <th>Status</th>
+                <th>Tanggal</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for content in contents %}
+            <tr>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <img src="{{ content.image_url or 'https://via.placeholder.com/60x60?text=No+Image' }}"
+                            style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                        <div>
+                            <div style="font-weight: 600;">{{ content.title }}</div>
+                            <div style="font-size: 12px; color: var(--text-secondary);">{{ content.body[:50] }}...</div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    {% if content.type == 'news' %}
+                    <span class="badge badge-primary">📰 Berita</span>
+                    {% elif content.type == 'event' %}
+                    <span class="badge badge-success">🎉 Event</span>
+                    {% elif content.type == 'promo' %}
+                    <span class="badge badge-warning">🏷️ Promo</span>
+                    {% else %}
+                    <span class="badge">{{ content.type }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ content.language | upper }}</td>
+                <td>
+                    {% if content.is_published %}
+                    <span class="badge badge-success">Published</span>
+                    {% else %}
+                    <span class="badge badge-warning">Draft</span>
+                    {% endif %}
+                </td>
+                <td style="font-size: 13px;">{{ content.created_at[:10] if content.created_at else '-' }}</td>
+                <td>
+                    <button class="btn btn-outline btn-sm">Edit</button>
+                    <button class="btn btn-danger btn-sm">Hapus</button>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 40px;">Belum ada
+                    konten</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Add Content (Placeholder) -->
+<script>
+    function showAddModal() {
+        alert('Form tambah konten akan ditampilkan di sini. Fitur ini dalam pengembangan.');
+    }
+</script>
+{% endblock %}

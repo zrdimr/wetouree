@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ umkm.name }} - UMKM Pulau Harapan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f4c75;
+            --secondary: #3282b8;
+            --gold: #d4a373;
+            --success: #10b981;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --text-light: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .navbar-brand {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            text-decoration: none;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .umkm-header {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .umkm-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .umkm-info h1 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .umkm-badges {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .badge-category {
+            background: rgba(15, 76, 117, 0.1);
+            color: var(--primary);
+        }
+
+        .badge-verified {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 24px;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .rating span {
+            font-size: 16px;
+            color: var(--text-light);
+        }
+
+        .description {
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--text-light);
+            margin-bottom: 25px;
+        }
+
+        .location {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-light);
+            margin-bottom: 25px;
+        }
+
+        .contact-btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .contact-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .section-title {
+            font-size: 22px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 15px;
+        }
+
+        .product-name {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .product-price {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .umkm-header {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('home') }}" class="navbar-brand">🏝️ Pulau Harapan</a>
+    </nav>
+
+    <div class="container">
+        <a href="{{ url_for('marketplace') }}" class="back-link">← Kembali ke Marketplace</a>
+
+        <div class="umkm-header">
+            <img src="{{ umkm.image_url or 'https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=600' }}"
+                alt="{{ umkm.name }}" class="umkm-image">
+            <div class="umkm-info">
+                <div class="umkm-badges">
+                    <span class="badge badge-category">{{ umkm.category | capitalize }}</span>
+                    {% if umkm.is_verified %}
+                    <span class="badge badge-verified">✓ Verified</span>
+                    {% endif %}
+                </div>
+                <h1>{{ umkm.name }}</h1>
+                <div class="rating">
+                    ⭐ {{ umkm.rating }}
+                    <span>(Rating)</span>
+                </div>
+                <p class="description">{{ umkm.description }}</p>
+                <div class="location">📍 {{ umkm.location or 'Kepulauan Seribu' }}</div>
+                <a href="https://wa.me/6281234567890?text=Halo, saya tertarik dengan {{ umkm.name }}" target="_blank"
+                    class="contact-btn">💬 Hubungi via WhatsApp</a>
+            </div>
+        </div>
+
+        {% if products %}
+        <h2 class="section-title">🛒 Produk / Layanan</h2>
+        <div class="products-grid">
+            {% for product in products %}
+            <div class="product-card">
+                <img src="{{ product.image_url or 'https://via.placeholder.com/300x200?text=Product' }}"
+                    alt="{{ product.name }}" class="product-image">
+                <div class="product-info">
+                    <div class="product-name">{{ product.name }}</div>
+                    <div class="product-price">Rp {{ "{:,.0f}".format(product.price) }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+
+</html>

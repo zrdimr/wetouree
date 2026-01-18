@@ -1,0 +1,228 @@
+{% extends "admin_layout.html" %}
+
+{% block title %}CMS Management{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card primary">
+        <div class="stat-label">Total Konten</div>
+        <div class="stat-value">{{ contents | length }}</div>
+    </div>
+    <div class="stat-card success">
+        <div class="stat-label">Published</div>
+        <div class="stat-value">{{ published_count }}</div>
+    </div>
+    <div class="stat-card warning">
+        <div class="stat-label">Draft</div>
+        <div class="stat-value">{{ draft_count }}</div>
+    </div>
+    <div class="stat-card gold">
+        <div class="stat-label">Halaman</div>
+        <div class="stat-value">{{ page_count }}</div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">➕ Tambah Konten Baru</h3>
+    </div>
+    <form action="{{ url_for('create_content') }}" method="POST" style="padding: 20px;">
+        <div class="grid-2" style="gap: 20px;">
+            <div class="form-group">
+                <label>Judul</label>
+                <input type="text" name="title" class="form-control" placeholder="Judul konten..." required>
+            </div>
+            <div class="form-group">
+                <label>Tipe</label>
+                <select name="type" class="form-control" required>
+                    <option value="announcement">📢 Pengumuman</option>
+                    <option value="promo">🎁 Promo</option>
+                    <option value="news">📰 Berita</option>
+                    <option value="article">📝 Artikel</option>
+                    <option value="page">📄 Halaman</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Konten</label>
+            <textarea name="content" class="form-control" rows="4" placeholder="Tulis konten di sini..."
+                required></textarea>
+        </div>
+        <div class="grid-2" style="gap: 20px;">
+            <div class="form-group">
+                <label>URL Gambar (opsional)</label>
+                <input type="text" name="image_url" class="form-control" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label>Status</label>
+                <select name="is_active" class="form-control">
+                    <option value="true">✅ Publish</option>
+                    <option value="false">📝 Draft</option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">💾 Simpan Konten</button>
+    </form>
+</div>
+
+<!-- Content List -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">📚 Daftar Konten</h3>
+        <div style="display: flex; gap: 10px;">
+            <select id="filterType" onchange="filterContent()" class="form-control" style="width: auto;">
+                <option value="">Semua Tipe</option>
+                <option value="announcement">📢 Pengumuman</option>
+                <option value="promo">🎁 Promo</option>
+                <option value="news">📰 Berita</option>
+                <option value="article">📝 Artikel</option>
+                <option value="page">📄 Halaman</option>
+            </select>
+        </div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Judul</th>
+                <th>Tipe</th>
+                <th>Status</th>
+                <th>Tanggal</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="contentTable">
+            {% for content in contents %}
+            <tr data-type="{{ content.type }}">
+                <td>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        {% if content.image_url %}
+                        <img src="{{ content.image_url }}"
+                            style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
+                        {% else %}
+                        <div
+                            style="width: 50px; height: 50px; border-radius: 8px; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                            {% if content.type == 'announcement' %}📢{% elif content.type == 'promo' %}🎁{% elif
+                            content.type == 'news' %}📰{% elif content.type == 'article' %}📝{% else %}📄{% endif %}
+                        </div>
+                        {% endif %}
+                        <div>
+                            <div style="font-weight: 600;">{{ content.title }}</div>
+                            <div style="font-size: 12px; color: var(--text-secondary);">{{ content.body[:60] }}...
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <span
+                        class="badge badge-{{ 'primary' if content.type == 'announcement' else 'success' if content.type == 'promo' else 'warning' if content.type == 'news' else 'info' }}">
+                        {{ content.type | capitalize }}
+                    </span>
+                </td>
+                <td>
+                    {% if content.is_published %}
+                    <span class="badge badge-success">Published</span>
+                    {% else %}
+                    <span class="badge badge-warning">Draft</span>
+                    {% endif %}
+                </td>
+                <td style="font-size: 12px; color: var(--text-secondary);">
+                    {{ content.created_at[:10] if content.created_at else 'N/A' }}
+                </td>
+                <td>
+                    <div style="display: flex; gap: 5px;">
+                        <button class="btn btn-sm btn-primary" onclick="editContent({{ content.id }})">✏️</button>
+                        <form action="{{ url_for('delete_content', content_id=content.id) }}" method="POST"
+                            style="display: inline;" onsubmit="return confirm('Hapus konten ini?');">
+                            <button type="submit" class="btn btn-sm btn-danger">🗑️</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                    Belum ada konten. Buat konten pertama Anda di form atas!
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center;">
+    <div style="background: #fff; padding: 30px; border-radius: 16px; max-width: 600px; width: 90%;">
+        <h3 style="margin-bottom: 20px;">✏️ Edit Konten</h3>
+        <form id="editForm" method="POST">
+            <div class="form-group">
+                <label>Judul</label>
+                <input type="text" name="title" id="editTitle" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Konten</label>
+                <textarea name="content" id="editContent" class="form-control" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+                <label>URL Gambar (opsional)</label>
+                <input type="text" name="image_url" id="editImageUrl" class="form-control" placeholder="https://...">
+            </div>
+            <div class="grid-2" style="gap: 15px;">
+                <div class="form-group">
+                    <label>Tipe</label>
+                    <select name="type" id="editType" class="form-control">
+                        <option value="announcement">📢 Pengumuman</option>
+                        <option value="promo">🎁 Promo</option>
+                        <option value="news">📰 Berita</option>
+                        <option value="article">📝 Artikel</option>
+                        <option value="page">📄 Halaman</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select name="is_active" id="editActive" class="form-control">
+                        <option value="true">✅ Published</option>
+                        <option value="false">📝 Draft</option>
+                    </select>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="button" onclick="closeEditModal()" class="btn" style="background: #eee;">Batal</button>
+                <button type="submit" class="btn btn-primary">💾 Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function filterContent() {
+        const type = document.getElementById('filterType').value;
+        document.querySelectorAll('#contentTable tr').forEach(row => {
+            if (!type || row.dataset.type === type) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    function editContent(id) {
+        fetch(`/api/contents/${id}`)
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('editTitle').value = data.title;
+                document.getElementById('editContent').value = data.body;
+                document.getElementById('editImageUrl').value = data.image_url || '';
+                document.getElementById('editType').value = data.type;
+                document.getElementById('editActive').value = data.is_published ? 'true' : 'false';
+                document.getElementById('editForm').action = `/admin/cms/${id}/update`;
+                document.getElementById('editModal').style.display = 'flex';
+            });
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+</script>
+{% endblock %}

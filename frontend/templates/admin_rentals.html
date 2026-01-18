@@ -1,0 +1,105 @@
+{% extends "admin_layout.html" %}
+
+{% block title %}Sewa Alat Camping{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card primary">
+        <div class="stat-label">Total Alat</div>
+        <div class="stat-value">{{ equipment_list | length }}</div>
+    </div>
+    <div class="stat-card success">
+        <div class="stat-label">Tersedia</div>
+        <div class="stat-value">{{ available_count }}</div>
+    </div>
+    <div class="stat-card warning">
+        <div class="stat-label">Disewa</div>
+        <div class="stat-value">{{ rented_count }}</div>
+    </div>
+    <div class="stat-card gold">
+        <div class="stat-label">Pendapatan</div>
+        <div class="stat-value">Rp {{ "{:,.0f}".format(total_revenue) }}</div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">⛺ Daftar Alat Camping</h3>
+            <button class="btn btn-primary" onclick="alert('Form tambah alat coming soon!')">+ Tambah Alat</button>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+            {% for eq in equipment_list %}
+            <div style="background: rgba(0,0,0,0.02); border-radius: 12px; overflow: hidden;">
+                <img src="{{ eq.image_url or 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=300' }}"
+                    style="width: 100%; height: 120px; object-fit: cover;">
+                <div style="padding: 12px;">
+                    <span class="badge badge-{{ 'success' if eq.available > 0 else 'danger' }}"
+                        style="font-size: 10px;">
+                        {{ eq.category | upper }}
+                    </span>
+                    <h4 style="margin: 8px 0 4px; font-size: 14px;">{{ eq.name }}</h4>
+                    <p style="font-size: 12px; color: var(--text-secondary);">Stok: {{ eq.available }}/{{ eq.stock }}
+                    </p>
+                    <p style="font-weight: 600; color: var(--primary);">Rp {{ "{:,.0f}".format(eq.price_per_day) }}/hari
+                    </p>
+                </div>
+            </div>
+            {% else %}
+            <p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary);">Belum ada alat</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">📋 Daftar Penyewaan</h3>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Alat</th>
+                    <th>Penyewa</th>
+                    <th>Tanggal</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rental in rentals %}
+                <tr>
+                    <td>{{ rental.equipment_name or 'Unknown' }}</td>
+                    <td>
+                        <div>{{ rental.customer_name }}</div>
+                        <div style="font-size: 11px; color: var(--text-secondary);">{{ rental.customer_phone }}</div>
+                    </td>
+                    <td style="font-size: 12px;">{{ rental.rental_date }} - {{ rental.return_date }}</td>
+                    <td>
+                        {% if rental.status == 'pending' %}
+                        <span class="badge badge-warning">Pending</span>
+                        {% elif rental.status == 'active' %}
+                        <span class="badge badge-primary">Aktif</span>
+                        {% elif rental.status == 'returned' %}
+                        <span class="badge badge-success">Dikembalikan</span>
+                        {% else %}
+                        <span class="badge">{{ rental.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form action="{{ url_for('update_rental_status', rental_id=rental.id) }}" method="POST"
+                            style="display: inline;">
+                            <input type="hidden" name="status" value="returned">
+                            <button class="btn btn-success btn-sm" type="submit">✓</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center; color: var(--text-secondary);">Belum ada penyewaan</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

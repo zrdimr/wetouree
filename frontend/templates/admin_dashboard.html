@@ -1,59 +1,172 @@
 {% extends "admin_layout.html" %}
 
+{% block title %}Dashboard{% endblock %}
+
 {% block content %}
-<div class="card">
-    <h4>Overview</h4>
-    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-        <div style="flex: 1; background: #e3f2fd; padding: 20px; border-radius: 8px; text-align: center;">
-            <h2 style="margin: 0; color: #0d47a1;">{{ bookings|length }}</h2>
-            <p style="margin: 5px 0; color: #555;">Total Bookings</p>
-        </div>
-        <div style="flex: 1; background: #e8f5e9; padding: 20px; border-radius: 8px; text-align: center;">
-            <h2 style="margin: 0; color: #1b5e20;">{{ confirmed_count }}</h2>
-            <p style="margin: 5px 0; color: #555;">Confirmed</p>
-        </div>
-        <div style="flex: 1; background: #fff3e0; padding: 20px; border-radius: 8px; text-align: center;">
-            <h2 style="margin: 0; color: #e65100;">{{ pending_count }}</h2>
-            <p style="margin: 5px 0; color: #555;">Pending</p>
-        </div>
+<!-- Stats Grid -->
+<div class="stats-grid">
+    <div class="stat-card primary">
+        <div class="stat-label">Total Pengunjung Hari Ini</div>
+        <div class="stat-value">{{ total_visitors }}</div>
+        <div class="stat-change up">↑ 12% dari kemarin</div>
+    </div>
+    <div class="stat-card success">
+        <div class="stat-label">Booking Aktif</div>
+        <div class="stat-value">{{ active_bookings }}</div>
+        <div class="stat-change up">↑ 8% dari minggu lalu</div>
+    </div>
+    <div class="stat-card warning">
+        <div class="stat-label">Destinasi Aktif</div>
+        <div class="stat-value">{{ total_destinations }}</div>
+        <span class="badge badge-success">Semua Buka</span>
+    </div>
+    <div class="stat-card gold">
+        <div class="stat-label">UMKM Terdaftar</div>
+        <div class="stat-value">{{ total_umkm }}</div>
+        <div class="stat-change up">↑ 3 baru bulan ini</div>
     </div>
 </div>
 
-<div class="card">
-    <h4>Recent Bookings</h4>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Customer</th>
-                <th>Package ID</th>
-                <th>Date</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for booking in bookings[:5] %}
-            <tr>
-                <td>#{{ booking.id }}</td>
-                <td>{{ booking.customer_name }}</td>
-                <td>{{ booking.package_id }}</td>
-                <td>{{ booking.date }}</td>
-                <td>
-                    <span
-                        class="badge {% if booking.status == 'confirmed' %}bg-success{% elif booking.status == 'pending' %}bg-warning{% else %}bg-secondary{% endif %}">
-                        {{ booking.status }}
-                    </span>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="5" style="text-align:center;">No bookings found.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <div style="margin-top: 15px; text-align: right;">
-        <a href="{{ url_for('admin_bookings') }}" class="btn btn-info">View All Bookings</a>
+<div class="grid-2">
+    <!-- Visitor Chart -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">📈 Tren Kunjungan (7 Hari)</h3>
+        </div>
+        <div class="chart-container">
+            <canvas id="visitorChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Destination Capacity -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">🏝️ Kapasitas Destinasi</h3>
+            <a href="{{ url_for('admin_destinations') }}" class="btn btn-outline btn-sm">Lihat Semua →</a>
+        </div>
+        {% for dest in destinations %}
+        <div style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span style="font-weight: 500;">{{ dest.name }}</span>
+                <span style="color: var(--text-secondary); font-size: 13px;">
+                    {{ dest.current_visitors }}/{{ dest.capacity }}
+                </span>
+            </div>
+            {% set percentage = (dest.current_visitors / dest.capacity * 100) | int %}
+            <div class="capacity-meter">
+                <div class="capacity-fill {% if percentage < 50 %}low{% elif percentage < 80 %}medium{% else %}high{% endif %}"
+                    style="width: {{ percentage }}%;"></div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 </div>
+
+<div class="grid-2">
+    <!-- Recent Bookings -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">🎫 Booking Terbaru</h3>
+            <a href="{{ url_for('admin_bookings') }}" class="btn btn-outline btn-sm">Lihat Semua →</a>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama</th>
+                    <th>Tanggal</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in recent_bookings %}
+                <tr>
+                    <td>#{{ booking.id }}</td>
+                    <td>{{ booking.customer_name }}</td>
+                    <td>{{ booking.date }}</td>
+                    <td>
+                        {% if booking.status == 'confirmed' %}
+                        <span class="badge badge-success">Confirmed</span>
+                        {% elif booking.status == 'pending' %}
+                        <span class="badge badge-warning">Pending</span>
+                        {% else %}
+                        <span class="badge badge-danger">{{ booking.status | capitalize }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" style="text-align: center; color: var(--text-secondary);">Belum ada booking</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Top UMKM -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">🏪 UMKM Populer</h3>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nama</th>
+                    <th>Kategori</th>
+                    <th>Rating</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for umkm in top_umkm %}
+                <tr>
+                    <td style="font-weight: 500;">{{ umkm.name }}</td>
+                    <td><span class="badge badge-primary">{{ umkm.category | capitalize }}</span></td>
+                    <td>⭐ {{ umkm.rating }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" style="text-align: center; color: var(--text-secondary);">Belum ada UMKM</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // Visitor Chart
+    const ctx = document.getElementById('visitorChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+            datasets: [{
+                label: 'Pengunjung',
+                data: [120, 190, 150, 220, 280, 350, 310],
+                borderColor: '#3282b8',
+                backgroundColor: 'rgba(50, 130, 184, 0.1)',
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: '#0f4c75',
+                pointBorderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(0,0,0,0.05)' }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}
